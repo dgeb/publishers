@@ -16,6 +16,10 @@ module PublishersHelper
     "https://#{publisher.brave_publisher_id}"
   end
 
+  def uphold_authorization_endpoint(publisher)
+    Rails.application.secrets[:uphold_authorization_endpoint].gsub('<STATE>', publisher.uphold_state_token)
+  end
+
   def publisher_humanize_verified(publisher)
     if publisher.verified?
       I18n.t("publishers.verified")
