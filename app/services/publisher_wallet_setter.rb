@@ -10,7 +10,7 @@ class PublisherWalletSetter < BaseApiClient
     return perform_offline if Rails.application.secrets[:api_eyeshade_offline]
     params = {
       "parameters": {
-        "code" => publisher.uphold_code,
+        "code" => publisher.uphold_access_token,
       },
       "verificationId" => publisher.id,
     }
