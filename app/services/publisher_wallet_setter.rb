@@ -2,19 +2,16 @@
 class PublisherWalletSetter < BaseApiClient
   attr_reader :publisher, :bitcoin_address
 
-  def initialize(bitcoin_address:, publisher:)
-    @bitcoin_address = bitcoin_address
+  def initialize(publisher:)
     @publisher = publisher
-    require "bitcoin"
-    if !Bitcoin.valid_address?(@bitcoin_address)
-      raise "Address is invalid: #{@bitcoin_address}"
-    end
   end
 
   def perform
     return perform_offline if Rails.application.secrets[:api_eyeshade_offline]
     params = {
-      "bitcoinAddress" => bitcoin_address,
+      "parameters": {
+        "code" => publisher.uphold_access_token,
+      },
       "verificationId" => publisher.id,
     }
     # This raises when response is not 2xx.
@@ -22,7 +19,7 @@ class PublisherWalletSetter < BaseApiClient
       request.body = JSON.dump(params)
       request.headers["Authorization"] = api_authorization_header
       request.headers["Content-Type"] = "application/json"
-      request.url("/v1/publishers/#{publisher.brave_publisher_id}/wallet")
+      request.url("/v2/publishers/#{publisher.brave_publisher_id}/wallet")
     end
   end
 
