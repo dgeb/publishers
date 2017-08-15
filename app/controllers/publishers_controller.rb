@@ -140,20 +140,28 @@ class PublishersController < ApplicationController
 
     # Ensure the uphold_state_token has been set. If not send back to try again
     if @publisher.uphold_state_token.blank?
-      return redirect_to(publisher_next_step_path(current_publisher), alert: I18n.t("publishers.verification_uphold_state_token_does_not_match"))
+      return redirect_to(publisher_next_step_path(@publisher), alert: I18n.t("publishers.verification_uphold_state_token_does_not_match"))
     end
 
     # Ensure the state token from Uphold matches the uphold_state_token last sent to uphold. If not send back to try again
     state_token = params[:state]
     if @publisher.uphold_state_token != state_token
-      return redirect_to(publisher_next_step_path(current_publisher), alert: I18n.t("publishers.verification_uphold_state_token_does_not_match"))
+      return redirect_to(publisher_next_step_path(@publisher), alert: I18n.t("publishers.verification_uphold_state_token_does_not_match"))
     end
 
     @publisher.uphold_state_token = nil
     @publisher.uphold_code = params[:code]
     @publisher.save!
 
-    render('publishers/finished')
+    ExchangeUpholdCodeForAccessTokenJob.perform_now(brave_publisher_id: @publisher.id)
+
+    @publisher.reload
+
+    if @publisher.uphold_access_parameters
+      render('publishers/finished')
+    else
+      return redirect_to(publisher_next_step_path(@publisher))
+    end
   end
 
   def download_verification_file

@@ -159,35 +159,85 @@ class PublishersControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "after redirection back from uphold a publisher's authorization_token is set and finished page is shown" do
-    perform_enqueued_jobs do
-      post(publishers_path, params: PUBLISHER_PARAMS)
+  test "after redirection back from uphold and uphold_api is offline a publisher's code is still set" do
+    begin
+      init_api_uphold_offline_succeeds = Rails.application.secrets[:api_uphold_offline_succeeds]
+      Rails.application.secrets[:api_uphold_offline_succeeds] = false
+
+      perform_enqueued_jobs do
+        post(publishers_path, params: PUBLISHER_PARAMS)
+      end
+      publisher = Publisher.order(created_at: :asc).last
+      url = publisher_url(publisher, token: publisher.authentication_token)
+      get(url)
+      follow_redirect!
+
+      uphold_state_token = SecureRandom.hex(64)
+      publisher.uphold_state_token = uphold_state_token
+
+      publisher.verified = true
+      publisher.save!
+
+      url = uphold_verified_publishers_path
+      get(url, params: { code: 'ebb18043eb2e106fccb9d13d82bec119d8cd016c', state: uphold_state_token })
+      assert(200, response.status)
+
+      publisher.reload
+      # verify that the uphold_state_token has been cleared
+      assert_nil(publisher.uphold_state_token)
+
+      # verify that the uphold_code has been set
+      assert_not_nil(publisher.uphold_code)
+      assert_equal('ebb18043eb2e106fccb9d13d82bec119d8cd016c', publisher.uphold_code)
+
+      # verify that the uphold_access_parameters has not been set
+      assert_nil(publisher.uphold_access_parameters)
+
+      # verify that the finished_header was not displayed
+      refute_match(I18n.t('publishers.finished_header'), response.body)
+    ensure
+      Rails.application.secrets[:api_uphold_offline_succeeds] = init_api_uphold_offline_succeeds
     end
-    publisher = Publisher.order(created_at: :asc).last
-    url = publisher_url(publisher, token: publisher.authentication_token)
-    get(url)
-    follow_redirect!
+  end
 
-    uphold_state_token = SecureRandom.hex(64)
-    publisher.uphold_state_token = uphold_state_token
+  test "after redirection back from uphold and uphold_api is online a publisher's code is nil and uphold_access_parameters is set" do
+    begin
+      init_api_uphold_offline_succeeds = Rails.application.secrets[:api_uphold_offline_succeeds]
+      Rails.application.secrets[:api_uphold_offline_succeeds] = true
 
-    publisher.verified = true
-    publisher.save!
+      perform_enqueued_jobs do
+        post(publishers_path, params: PUBLISHER_PARAMS)
+      end
+      publisher = Publisher.order(created_at: :asc).last
+      url = publisher_url(publisher, token: publisher.authentication_token)
+      get(url)
+      follow_redirect!
 
-    url = uphold_verified_publishers_path
-    get(url, params: { code: 'ebb18043eb2e106fccb9d13d82bec119d8cd016c', state: uphold_state_token })
-    assert(200, response.status)
+      uphold_state_token = SecureRandom.hex(64)
+      publisher.uphold_state_token = uphold_state_token
 
-    publisher.reload
-    # verify that the uphold_state_token has been cleared
-    assert_nil(publisher.uphold_state_token)
+      publisher.verified = true
+      publisher.save!
 
-    # verify that the authorization token has been set
-    assert_not_nil(publisher.uphold_code)
-    assert_equal('ebb18043eb2e106fccb9d13d82bec119d8cd016c', publisher.uphold_code)
+      url = uphold_verified_publishers_path
+      get(url, params: { code: 'ebb18043eb2e106fccb9d13d82bec119d8cd016c', state: uphold_state_token })
+      assert(200, response.status)
 
-    # verify that the finished_header was displayed
-    assert_match(I18n.t('publishers.finished_header'), response.body)
+      publisher.reload
+      # verify that the uphold_state_token has been cleared
+      assert_nil(publisher.uphold_state_token)
+
+      # verify that the uphold_code has been cleared
+      assert_nil(publisher.uphold_code)
+
+      # verify that the uphold_access_parameters has been set
+      assert_match('FAKEACCESSTOKEN', publisher.uphold_access_parameters)
+
+      # verify that the finished_header was displayed
+      assert_match(I18n.t('publishers.finished_header'), response.body)
+    ensure
+      Rails.application.secrets[:api_uphold_offline_succeeds] = init_api_uphold_offline_succeeds
+    end
   end
 
   test "after redirection back from uphold, a missing publisher's `uphold_state_token` redirects back to verification_done" do

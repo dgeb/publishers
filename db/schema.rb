@@ -62,7 +62,7 @@ ActiveRecord::Schema.define(version: 20170812163328) do
     t.boolean  "created_via_api",                   default: false, null: false
     t.string   "uphold_state_token"
     t.string   "uphold_code"
-    t.string   "uphold_access_token"
+    t.string   "uphold_access_parameters"
     t.index ["brave_publisher_id"], name: "index_publishers_on_brave_publisher_id", using: :btree
     t.index ["created_at"], name: "index_publishers_on_created_at", using: :btree
     t.index ["verification_token"], name: "index_publishers_on_verification_token", using: :btree
