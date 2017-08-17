@@ -2,33 +2,22 @@
 class PublisherWalletSetter < BaseApiClient
   attr_reader :publisher, :bitcoin_address
 
-  def initialize(bitcoin_address:, publisher:)
-    @bitcoin_address = bitcoin_address
+  def initialize(publisher:)
     @publisher = publisher
-    require "bitcoin"
-    if !Bitcoin.valid_address?(@bitcoin_address)
-      raise "Address is invalid: #{@bitcoin_address}"
-    end
   end
 
   def perform
-    return perform_offline if Rails.application.secrets[:api_eyeshade_offline]
-    params = {
-      "bitcoinAddress" => bitcoin_address,
-      "verificationId" => publisher.id,
-    }
+    if !publisher.uphold_access_parameters
+      raise "Publisher #{publisher.id} is missing uphold_access_parameters."
+    end
+
     # This raises when response is not 2xx.
     response = connection.put do |request|
-      request.body = JSON.dump(params)
+      request.body = "{\"parameters\": #{publisher.uphold_access_parameters}, \"verificationId\": \"#{publisher.id}\"}"
       request.headers["Authorization"] = api_authorization_header
       request.headers["Content-Type"] = "application/json"
-      request.url("/v1/publishers/#{publisher.brave_publisher_id}/wallet")
+      request.url("/v2/publishers/#{publisher.brave_publisher_id}/wallet")
     end
-  end
-
-  def perform_offline
-    Rails.logger.info("PublisherVerifier eyeshade offline; only locally updating Bitcoin address.")
-    true
   end
 
   private
