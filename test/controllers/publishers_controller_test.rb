@@ -153,7 +153,10 @@ class PublishersControllerTest < ActionDispatch::IntegrationTest
     assert_not_nil(publisher.uphold_state_token)
 
     # assert that the state token is included in the uphold authorization url
-    endpoint = Rails.application.secrets[:uphold_authorization_endpoint].gsub('<STATE>', publisher.uphold_state_token)
+    endpoint = Rails.application.secrets[:uphold_authorization_endpoint]
+                   .gsub('<UPHOLD_CLIENT_ID>', Rails.application.secrets[:uphold_authorization_endpoint])
+                   .gsub('<STATE>', publisher.uphold_state_token)
+
     assert_select("a.btn-primary[href='#{endpoint}']") do |elements|
       assert_equal(1, elements.length, 'A link with the correct href to Uphold.com is present')
       assert_equal(elements[0].inner_text, 'Connect with Uphold', 'Link text matches expectations')
