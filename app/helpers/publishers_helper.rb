@@ -42,11 +42,22 @@ module PublishersHelper
 
   def publisher_next_step_path(publisher)
     return verification_publishers_path if !publisher.verified?
-    # ToDo: Polling page for exchanging uphold_code for uphold_access_parameters
-    # return authorize_uphold_path if publisher.uphold_code && publisher.uphold_access_parameters.blank?
-    return verification_done_publishers_path if publisher.uphold_access_parameters.blank?
 
-    home_publishers_path
+    case publisher.uphold_status
+      when :unconnected
+        # Starting uphold connection process
+        verification_done_publishers_path
+      when :access_parameters_acquired
+        # Waiting to send parameters to eye_shade
+        # ToDo: Separate status page?
+        verification_done_publishers_path
+      when :code_acquired
+        # ToDo: Polling page for exchanging uphold_code for uphold_access_parameters
+        # return authorize_uphold_path if publisher.uphold_code && publisher.uphold_access_parameters.blank?
+        verification_done_publishers_path
+      else
+        home_publishers_path
+    end
   end
 
   # NOTE: Be careful! This link logs the publisher a back in.
