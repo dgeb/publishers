@@ -7,6 +7,8 @@ class PublisherWalletSetter < BaseApiClient
   end
 
   def perform
+    return perform_offline if Rails.application.secrets[:api_eyeshade_offline]
+
     if !publisher.uphold_access_parameters
       raise "Publisher #{publisher.id} is missing uphold_access_parameters."
     end
@@ -18,6 +20,11 @@ class PublisherWalletSetter < BaseApiClient
       request.headers["Content-Type"] = "application/json"
       request.url("/v2/publishers/#{publisher.brave_publisher_id}/wallet")
     end
+  end
+
+  def perform_offline
+    Rails.logger.info("PublisherWalletSetter eyeshade offline; only locally updating uphold_access_parameters.")
+    true
   end
 
   private
