@@ -17,6 +17,7 @@ Rails.application.routes.draw do
       get :verification_support_queue
       get :status
       get :uphold_verified
+      get :statement
       patch :verify
       patch :check_for_https
       patch :update

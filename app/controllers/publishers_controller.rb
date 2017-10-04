@@ -278,7 +278,8 @@ class PublishersController < ApplicationController
   def generate_statement
     publisher = current_publisher
     statement_period = params[:statement_period]
-    report_url = PublisherStatementGenerator.new(publisher: publisher, statement_period: statement_period.to_sym).perform
+    statement = PublisherStatementGenerator.new(publisher: publisher, statement_period: statement_period.to_sym).perform
+    report_url = statement_publishers_path(id: statement.id)
     respond_to do |format|
       format.json {
         render(json: { reportURL: report_url }, status: 200)
