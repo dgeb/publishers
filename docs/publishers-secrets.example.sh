@@ -12,6 +12,10 @@ export API_EYESHADE_OFFLINE=1
 #export API_LEDGER_BASE_URI="" # e.g. https://ledger-server.example.com/ or run with API_LEDGER_OFFLINE=1
 export API_LEDGER_OFFLINE=1
 #export ATTR_ENCRYPTED_KEY="" # Encrypt sensitive things in the DB at rest.
+export AWS_ACCESS_KEY_ID="" # For uploading encrypted publisher statements.
+export AWS_BUCKET="" # Target where publisher statements get uploaded.
+export AWS_REGION="" # e.g. us-west-2
+export AWS_SECRET_ACCESS_KEY="" # For uploading encrypted publisher statements.
 #export BASIC_AUTH_USER="" # Enable HTTP basic auth for the whole app.
 #export BASIC_AUTH_PASSWORD="" # see above
 export INTERNAL_EMAIL="admin@publishers.local" # Admin notifications get sent here.
