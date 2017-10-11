@@ -279,11 +279,18 @@ class PublishersController < ApplicationController
     publisher = current_publisher
     statement_period = params[:statement_period]
     statement = PublisherStatementGenerator.new(publisher: publisher, statement_period: statement_period.to_sym).perform
-    report_url = statement_publishers_path(id: statement.id)
-    respond_to do |format|
-      format.json {
-        render(json: { reportURL: report_url }, status: 200)
-      }
+    SyncPublisherStatementJob.perform_later(publisher_statement_id: statement.id)
+    render(json: { id: statement.id }, status: 200)
+  end
+
+  def statement
+    statement = PublisherStatement.find(params[:id])
+
+    if (statement && statement.s3_key)
+      s3_url = PublisherStatementS3Getter.new(publisher_statement: statement).get_statement_s3_url
+      render(json: { reportURL: s3_url }, status: 200)
+    else
+      render(status: 404)
     end
   end
 

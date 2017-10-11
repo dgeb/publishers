@@ -50,23 +50,30 @@ javascript:
         });
     }
 
-    function waitForReport(reportURL, delay, backoff, attempts) {
+    function pollUntilSuccess(url, delay, backoff, attempts) {
       return new Promise(function(resolve, reject) {
         if (attempts > 0) {
           setTimeout(function() {
-            window.fetch(reportURL, { method: 'GET' })
+            var options = {
+              headers: {
+                'Accept': 'application/json'
+              },
+              credentials: 'same-origin',
+              method: 'GET'
+            };
+            window.fetch(url, options)
               .then(function(response) {
                 if (response.status === 200) {
                   // report successfully fetched
-                  resolve(reportURL);
+                  resolve(response);
                 } else {
                   // report could not be fetched, so try again
-                  return waitForReport(reportURL, delay + backoff, backoff, --attempts)
+                  return pollUntilSuccess(url, delay + backoff, backoff, --attempts)
                     .catch(reject);
                 }
               }, function(e) {
                 // swallow exception and try again
-                return waitForReport(reportURL, delay + backoff, backoff, --attempts)
+                return pollUntilSuccess(url, delay + backoff, backoff, --attempts)
                   .catch(reject);
               });
           }, delay);
@@ -114,8 +121,7 @@ javascript:
 
       var generateStatement = document.getElementById('generate_statement');
       var generateStatementResult = document.getElementById('generate_statement_result');
-      // FIXME: Remove once #74 is fixed.
-      // var statementPeriod = document.getElementById('statement_period');
+      var statementPeriod = document.getElementById('statement_period');
 
       editContact.addEventListener('click', function(event) {
         updateContactName.value = showContactName.innerText;
@@ -152,38 +158,42 @@ javascript:
           });
       }, false);
 
-      // FIXME: Remove once #74 is fixed.
-      //statementPeriod.addEventListener('click', function(event) {
-      //  hideSpinner();
-      //  generateStatement.style.display = 'inline-block';
-      //  generateStatementResult.style.display = 'none';
-      //}, false);
-      //
-      //generateStatement.addEventListener('click', function(event) {
-      //  event.preventDefault();
-      //
-      //  submitForm('statement_generator', 'PATCH', false)
-      //    .then(function(response) {
-      //      return response.json();
-      //    })
-      //    .then(function(json) {
-      //      generateStatement.style.display = 'none';
-      //      generateStatementResult.style.display = 'inline-block';
-      //      generateStatementResult.innerText = 'Generating';
-      //
-      //      dynamicEllipsis.start('generate_statement_result');
-      //
-      //      return waitForReport(json.reportURL, 3000, 2000, 4);
-      //    })
-      //    .then(function(reportURL) {
-      //      dynamicEllipsis.stop('generate_statement_result');
-      //      generateStatementResult.innerHTML = '<a href="' + reportURL + '" class="btn btn-tertiary btn-generate">View report</a>';
-      //    })
-      //    .catch(function() {
-      //      dynamicEllipsis.stop('generate_statement_result');
-      //      generateStatementResult.innerText = 'We will email you a link when your report is ready.'
-      //    });
-      //}, false);
+      statementPeriod.addEventListener('click', function(event) {
+        hideSpinner();
+        generateStatement.style.display = 'inline-block';
+        generateStatementResult.style.display = 'none';
+      }, false);
+
+      generateStatement.addEventListener('click', function(event) {
+        event.preventDefault();
+
+        submitForm('statement_generator', 'PATCH', false)
+          .then(function(response) {
+            return response.json();
+          })
+          .then(function(json) {
+            generateStatement.style.display = 'none';
+            generateStatementResult.style.display = 'inline-block';
+            generateStatementResult.innerText = 'Generating';
+
+            dynamicEllipsis.start('generate_statement_result');
+
+            var statementId = json.id;
+            return pollUntilSuccess('/publishers/statement?id=' + statementId, 3000, 2000, 4);
+          })
+          .then(function(response) {
+            return response.json();
+          })
+          .then(function(json) {
+            var reportURL = json.reportURL;
+            dynamicEllipsis.stop('generate_statement_result');
+            generateStatementResult.innerHTML = '<a href="' + reportURL + '" class="btn btn-tertiary btn-generate">View report</a>';
+          })
+          .catch(function(e) {
+            dynamicEllipsis.stop('generate_statement_result');
+            generateStatementResult.innerText = 'We will email you a link when your report is ready.'
+          });
+      }, false);
     }, false);
   })();
 
@@ -271,7 +281,7 @@ noscript
           .panel-section= link_to(t("publishers.uphold_check_balance"), "https://uphold.com/dashboard", class: "btn btn-primary")
   .col.col-details.col-md-6.col-xs-10.col-xs-center.col-sm-center
     .sub-panel.dashboard-panel
-      .hidden.statements
+      .statements
         .panel-header.panel-header-h4#publishers_statement
           = t("publishers.statement")
         = form_for(current_publisher, url: generate_statement_publishers_path, html: { id: "statement_generator" }) do |f|
