@@ -16,6 +16,9 @@ gem "devise", "~> 4.2.0"
 
 gem "email_validator", "~> 1.6"
 
+# GNU Privacy Guard Made Easy
+gem "gpgme", "~> 2.0", require: false
+
 # HTTP library wrapper
 gem "faraday", "~> 0.9.2", require: false
 
