@@ -191,7 +191,7 @@ javascript:
           })
           .catch(function(e) {
             dynamicEllipsis.stop('generate_statement_result');
-            generateStatementResult.innerText = 'We will email you a link when your report is ready.'
+            generateStatementResult.innerText = 'We will email you when your report is ready.'
           });
       }, false);
     }, false);
@@ -281,17 +281,17 @@ noscript
           .panel-section= link_to(t("publishers.uphold_check_balance"), "https://uphold.com/dashboard", class: "btn btn-primary")
   .col.col-details.col-md-6.col-xs-10.col-xs-center.col-sm-center
     .sub-panel.dashboard-panel
-      .statements
+      .statements#statement_section style=(current_publisher.uphold_verified ? '' : 'display: none')
         .panel-header.panel-header-h4#publishers_statement
           = t("publishers.statement")
         = form_for(current_publisher, url: generate_statement_publishers_path, html: { id: "statement_generator" }) do |f|
           .form-group
             = select_tag(:statement_period, options_for_select(publisher_statement_periods))
             .pull-right
-              a#generate_statement href="#" class="edit-link"
+              a.edit-link#generate_statement href="#"
                 = t("shared.generate")
-              span#generate_statement_result
         .clearfix
+        #generate_statement_result
       .panel-header.panel-header-h4#publishers_contact
         = t("publishers.contact")
         .pull-right
