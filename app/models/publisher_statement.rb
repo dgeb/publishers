@@ -19,4 +19,8 @@ class PublisherStatement < ApplicationRecord
   def expired?
     Time.zone.now > self.expires_at
   end
+
+  def encryption_key
+    Rails.application.secrets[:attr_encrypted_key]
+  end
 end
