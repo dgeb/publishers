@@ -52,34 +52,50 @@ javascript:
 
     function pollUntilSuccess(url, delay, backoff, attempts) {
       return new Promise(function(resolve, reject) {
-        if (attempts > 0) {
-          setTimeout(function() {
-            var options = {
-              headers: {
-                'Accept': 'application/json'
-              },
-              credentials: 'same-origin',
-              method: 'GET'
-            };
-            window.fetch(url, options)
-              .then(function(response) {
-                if (response.status === 200) {
-                  // report successfully fetched
-                  resolve(response);
-                } else {
-                  // report could not be fetched, so try again
-                  return pollUntilSuccess(url, delay + backoff, backoff, --attempts)
-                    .catch(reject);
-                }
-              }, function(e) {
-                // swallow exception and try again
-                return pollUntilSuccess(url, delay + backoff, backoff, --attempts)
-                  .catch(reject);
-              });
-          }, delay);
-        } else {
-          throw new Error('Attempts exceeded!');
+        var attempt = 0;
+        var currentDelay = delay;
+
+        function fetchAttempt() {
+          attempt++;
+
+          if (attempt > attempts) {
+            reject(new Error('Attempts exceeded!'));
+            return;
+          }
+
+          fetchAfterDelay(url, currentDelay)
+            .then(function(response) { resolve(response); })
+            .catch(function(e) {
+              currentDelay += backoff;
+              fetchAttempt();
+            });
         }
+
+        fetchAttempt();
+      });
+    }
+
+    function fetchAfterDelay(url, delay) {
+      return new Promise(function(resolve, reject) {
+        setTimeout(function() {
+          var options = {
+            headers: {
+              'Accept': 'application/json'
+            },
+            credentials: 'same-origin',
+            method: 'GET'
+          };
+          window.fetch(url, options)
+            .then(function(response) {
+              if (response.status === 200) {
+                resolve(response);
+              } else {
+                reject(response);
+              }
+            }, function(e) {
+              reject(e);
+            });
+        }, delay);
       });
     }
 
