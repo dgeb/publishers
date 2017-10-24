@@ -3,25 +3,25 @@ class EncryptedS3Store < BaseS3Client
     require "gpgme_init"
   end
 
-  # Returns object of type GPGME::Data
-  def encrypt(data)
-    crypto.encrypt(data, recipients: GPG_PUBKEY_RECIPIENT)
-  end
-
   # Returns S3::Object
-  # To get the presigned URL call:
-  # object.presigned_url(:get, expires_in: 1.week)
   def put_object(data:, key:)
     bucket.put_object(
       acl: "authenticated-read",
-      body: encrypt(data).read,
-      key: key,
+      body: crypto.encrypt(data).read,
+      key: key
     )
+  end
+
+  def get(key:)
+    object = bucket.object(key).get
+    str = object.body.read
+    cipher = GPGME::Data.new(str)
+    crypto.decrypt(cipher).read
   end
 
   private
 
   def crypto
-    @crypto ||= GPGME::Crypto.new(always_trust: true, armor: true)
+    @crypto ||= GPGME::Crypto.new(armor: true)
   end
 end

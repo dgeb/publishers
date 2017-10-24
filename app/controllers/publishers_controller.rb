@@ -39,6 +39,8 @@ class PublishersController < ApplicationController
     only: %i(edit_payment_info
              generate_statement
              home
+             statement
+             statement_ready
              update
              uphold_status
              uphold_verified)
@@ -283,12 +285,20 @@ class PublishersController < ApplicationController
     render(json: { id: statement.id }, status: 200)
   end
 
+  def statement_ready
+    statement = PublisherStatement.find(params[:id])
+    if (statement && statement.s3_key)
+      head :no_content
+    else
+      render(status: 404)
+    end
+  end
+
   def statement
     statement = PublisherStatement.find(params[:id])
 
     if (statement && statement.s3_key)
-      s3_url = PublisherStatementS3Getter.new(publisher_statement: statement).get_statement_s3_url
-      render(json: { reportURL: s3_url }, status: 200)
+      send_data EncryptedS3Store.new.get(key: statement.s3_key)
     else
       render(status: 404)
     end

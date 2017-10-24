@@ -19,7 +19,7 @@ class PublisherStatementGetter < BaseApiClient
 
   def perform_offline
     Rails.logger.info("PublisherStatementGetter offline.")
-    true
+    'Fake offline data'
   end
 
   private
