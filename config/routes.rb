@@ -20,11 +20,13 @@ Rails.application.routes.draw do
       get :uphold_verified
       get :statement
       get :statement_ready
+      get :youtube_email_verified
       patch :verify
       patch :check_for_https
       patch :update
       patch :generate_statement
       patch :update_unverified
+      patch :update_unverified_youtube
     end
   end
   devise_for :publishers

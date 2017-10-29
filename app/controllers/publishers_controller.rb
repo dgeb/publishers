@@ -22,6 +22,7 @@ class PublishersController < ApplicationController
   before_action :require_unverified_publisher,
     only: %i(email_verified
              update_unverified
+             update_unverified_youtube
              verification
              verification_choose_method
              verification_dns_record
@@ -128,6 +129,17 @@ class PublishersController < ApplicationController
     end
   end
 
+  def update_unverified_youtube
+    @publisher = current_publisher
+    success = @publisher.update(publisher_update_unverified_youtube_params)
+    if success
+
+      redirect_to("https://youtube.com")
+    else
+      render(:email_verified_youtube)
+    end
+  end
+
   # "Magic sign in link" / One time sign-in token via email
   def new_auth_token
     @publisher = Publisher.new
@@ -189,6 +201,10 @@ class PublishersController < ApplicationController
   end
 
   def email_verified
+    @publisher = current_publisher
+  end
+
+  def youtube_email_verified
     @publisher = current_publisher
   end
 
@@ -379,6 +395,10 @@ class PublishersController < ApplicationController
 
   def publisher_update_unverified_params
     params.require(:publisher).permit(:brave_publisher_id, :name, :phone, :show_verification_status)
+  end
+
+  def publisher_update_unverified_youtube_params
+    params.require(:publisher).permit(:name, :phone, :show_verification_status)
   end
 
   def publisher_create_auth_token_params

@@ -334,3 +334,5 @@ en:
     landing_login_body_html: "<strong>Already verified?</strong> Log in to see your publisher dashboard."
     landing_login_button: "Log in"
     landing_begin_button: "Get Started"
+  youtube:
+    authenticate_with_youtube: "Authenticate with Youtube"
