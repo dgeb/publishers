@@ -244,7 +244,7 @@ Devise.setup do |config|
                   Rails.application.secrets[:google_client_id],
                   Rails.application.secrets[:google_client_secret],
                   {
-                    scope: "email"
+                    scope: "profile,email,https://www.googleapis.com/auth/youtube.readonly"
                   }
 
   # ==> Warden configuration
