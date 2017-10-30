@@ -35,15 +35,6 @@ class Publisher < ApplicationRecord
 
   scope :created_recently, -> { where("created_at > :start_date", start_date: 1.week.ago) }
 
-  # google log-in
-  def self.from_omniauth(auth)
-    where(google_user_id: auth.uid).first_or_initialize.tap do |publisher|
-      publisher.google_user_id = auth.userid
-      publisher.save!
-    end
-  end
-
-
   # API call to eyeshade
   def balance
     @_balance ||= PublisherBalanceGetter.new(publisher: self).perform

@@ -335,4 +335,6 @@ en:
     landing_login_button: "Log in"
     landing_begin_button: "Get Started"
   youtube:
-    authenticate_with_youtube: "Authenticate with Youtube"
+    authenticate_with_youtube: "Authenticate with YouTube"
+    account_not_found: "Account not found"
+    oauth_error: "Error connecting to YouTube"

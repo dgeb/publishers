@@ -21,6 +21,8 @@ Rails.application.routes.draw do
       get :statement
       get :statement_ready
       get :youtube_email_verified
+      get :youtube_home
+      get :youtube_channels
       patch :verify
       patch :check_for_https
       patch :update

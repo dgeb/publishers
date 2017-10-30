@@ -44,7 +44,9 @@ class PublishersController < ApplicationController
              statement_ready
              update
              uphold_status
-             uphold_verified)
+             uphold_verified
+             youtube_channels
+             youtube_home)
   before_action :update_publisher_verification_method,
     only: %i(verification_dns_record
              verification_public_file
@@ -133,8 +135,7 @@ class PublishersController < ApplicationController
     @publisher = current_publisher
     success = @publisher.update(publisher_update_unverified_youtube_params)
     if success
-
-      redirect_to("https://youtube.com")
+      redirect_to publisher_google_oauth2_omniauth_authorize_path
     else
       render(:email_verified_youtube)
     end
@@ -293,6 +294,17 @@ class PublishersController < ApplicationController
     # ensure the wallet has been fetched, which will check if Uphold needs to be re-authorized
     # ToDo: rework this process?
     current_publisher.wallet
+  end
+
+  # TODO: merge with `home` to integrate dashboards
+  def youtube_home
+    # ensure the wallet has been fetched, which will check if Uphold needs to be re-authorized
+    # ToDo: rework this process?
+    current_publisher.wallet
+  end
+
+  def youtube_channels
+    current_publisher
   end
 
   def log_out
