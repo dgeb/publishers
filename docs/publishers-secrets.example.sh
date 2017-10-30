@@ -32,7 +32,7 @@ export UPHOLD_DASHBOARD_URL="https://sandbox.uphold.com/dashboard"
 export TERMS_OF_SERVICE_URL="https://basicattentiontoken.org/publisher-terms-of-service/"
 
 # Get these from the Google Web application setup. During setup:
-# - make sure the authorized redirect url goes to the endpoint /google_oauth2_callback
+# - make sure the authorized redirect url goes to the endpoint /publishers/auth/google_oauth2/callback
 export GOOGLE_CLIENT_ID=""
 export GOOGLE_PROJECT_ID=""
 export GOOGLE_AUTH_URI=""

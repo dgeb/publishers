@@ -7,7 +7,7 @@ class Publisher < ApplicationRecord
   attr_encrypted :uphold_code, key: :encryption_key
   attr_encrypted :uphold_access_parameters, key: :encryption_key
 
-  devise :timeoutable, :trackable
+  devise :timeoutable, :trackable, :omniauthable
 
   # Normalizes attribute before validation and saves into other attribute
   phony_normalize :phone, as: :phone_normalized, default_country_code: "US"
@@ -34,6 +34,15 @@ class Publisher < ApplicationRecord
   after_validation :generate_verification_token, if: -> { brave_publisher_id && brave_publisher_id_changed? }
 
   scope :created_recently, -> { where("created_at > :start_date", start_date: 1.week.ago) }
+
+  # google log-in
+  def self.from_omniauth(auth)
+    where(google_user_id: auth.uid).first_or_initialize.tap do |publisher|
+      publisher.google_user_id = auth.userid
+      publisher.save!
+    end
+  end
+
 
   # API call to eyeshade
   def balance
