@@ -22,3 +22,4 @@
               = recaptcha_tags
         .panel-controls
           = f.submit(t("publishers.new_auth_token_button"), class: "btn btn-primary")
+      = link_to("I'm a youtube Publisher", publisher_google_oauth2_omniauth_authorize_path)
