@@ -15,6 +15,9 @@ module Publishers
         publisher.provider = oauth_response.provider
         publisher.provider_user_id = oauth_response.uid
         publisher.verified = true
+
+        publisher.name = oauth_response.dig('info', 'name')
+        publisher.email = oauth_response.dig('info', 'email')
       else
         publisher = Publisher.where(provider: oauth_response.provider, provider_user_id: oauth_response.uid).first
         unless publisher
@@ -33,7 +36,7 @@ module Publishers
         sign_in(:publisher, publisher)
       end
 
-      redirect_to youtube_channels_publishers_path
+      redirect_to home_publishers_path
 
     rescue => e
       require "sentry-raven"

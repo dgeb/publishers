@@ -294,18 +294,10 @@ class PublishersController < ApplicationController
     # ensure the wallet has been fetched, which will check if Uphold needs to be re-authorized
     # ToDo: rework this process?
     current_publisher.wallet
-  end
 
-  # TODO: merge with `home` to integrate dashboards
-  def youtube_home
-    # ensure the wallet has been fetched, which will check if Uphold needs to be re-authorized
-    # ToDo: rework this process?
-    current_publisher.wallet
-  end
-
-  def youtube_channels
     PublisherYoutubeChannelSyncer.new(publisher: current_publisher,
                                       token: session['google_oauth2_credentials_token']).perform
+
   end
 
   def log_out
