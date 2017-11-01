@@ -13,21 +13,19 @@ class PublisherYoutubeChannelSyncer
                                             token: @token,
                                             channel_id: @publisher.youtube_channel_id).perform
     channel_attrs = {
-        title: channel_json['snippet']['title'],
-        description: channel_json['snippet']['description'],
-        thumbnail_url: channel_json['snippet']['thumbnails']['default']['url'],
-        subscriber_count: channel_json['statistics']['subscriberCount']
+        title: channel_json.dig('snippet', 'title'),
+        description: channel_json.dig('snippet', 'description'),
+        thumbnail_url: channel_json.dig('snippet', 'thumbnails', 'default', 'url'),
+        subscriber_count: channel_json.dig('statistics', 'subscriberCount')
     }
 
     # Create or update the youtube channel
     if publisher.youtube_channel
       publisher.youtube_channel.update(channel_attrs)
-      publisher.youtube_channel.save!
     else
       channel_attrs[:id] = channel_json['id']
 
       channel = YoutubeChannel.new(channel_attrs)
-      channel.save!
       publisher.youtube_channel = channel
       publisher.save!
     end
