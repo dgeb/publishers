@@ -304,7 +304,8 @@ class PublishersController < ApplicationController
   end
 
   def youtube_channels
-    current_publisher
+    @channel = YoutubeChannelGetter.new(publisher: current_publisher,
+                                       token: session['google_oauth2_credentials_token']).perform
   end
 
   def log_out
