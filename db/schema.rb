@@ -60,8 +60,10 @@ ActiveRecord::Schema.define(version: 20171101165616) do
     t.boolean  "host_connection_verified"
     t.string   "detected_web_host"
     t.string   "default_currency"
-    t.string   "provider"
-    t.string   "provider_user_id"
+    t.string   "auth_provider"
+    t.string   "auth_user_id"
+    t.string   "auth_name"
+    t.string   "auth_email"
     t.string   "youtube_channel_id"
     t.index ["brave_publisher_id"], name: "index_publishers_on_brave_publisher_id", using: :btree
     t.index ["created_at"], name: "index_publishers_on_created_at", using: :btree

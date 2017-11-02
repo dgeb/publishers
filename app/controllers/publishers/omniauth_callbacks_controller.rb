@@ -7,19 +7,21 @@ module Publishers
       if publisher
         if publisher.brave_publisher_id.present?
           raise 'Google OAuth2 Error: Publishers can not be associated with both a brave_publisher_id and a Google account.'
-        elsif publisher.provider
+        elsif publisher.auth_provider
           raise 'Google OAuth2 Error: Provider has already been set for Publisher.'
-        elsif publisher.provider_user_id
+        elsif publisher.auth_user_id
           raise 'Google OAuth2 Error: UID has already been set for Publisher.'
         end
-        publisher.provider = oauth_response.provider
-        publisher.provider_user_id = oauth_response.uid
+        publisher.auth_provider = oauth_response.provider
+        publisher.auth_user_id = oauth_response.uid
+        publisher.auth_name = oauth_response.dig('info', 'name')
+        publisher.auth_email = oauth_response.dig('info', 'email')
+
         publisher.verified = true
 
-        publisher.name = oauth_response.dig('info', 'name')
-        publisher.email = oauth_response.dig('info', 'email')
+        publisher.save!
       else
-        publisher = Publisher.where(provider: oauth_response.provider, provider_user_id: oauth_response.uid).first
+        publisher = Publisher.where(auth_provider: oauth_response.provider, auth_user_id: oauth_response.uid).first
         unless publisher
           redirect_to('/', notice: I18n.t("youtube.account_not_found"))
           return
@@ -27,10 +29,6 @@ module Publishers
       end
 
       session['google_oauth2_credentials_token'] = oauth_response.credentials.token
-
-      # TODO - store required data from response
-
-      publisher.save!
 
       unless current_publisher
         sign_in(:publisher, publisher)
