@@ -20,7 +20,8 @@ Rails.application.routes.draw do
       get :uphold_verified
       get :statement
       get :statement_ready
-      get :youtube_email_verified
+      get :contact_info
+      get :new_youtube_account
       get :youtube_home
       get :youtube_channels
       patch :verify
@@ -28,7 +29,6 @@ Rails.application.routes.draw do
       patch :update
       patch :generate_statement
       patch :update_unverified
-      patch :update_unverified_youtube
     end
   end
   devise_for :publishers, only: :omniauth_callbacks, controllers: { omniauth_callbacks: "publishers/omniauth_callbacks" }

@@ -21,8 +21,8 @@ class PublishersController < ApplicationController
              new_auth_token)
   before_action :require_unverified_publisher,
     only: %i(email_verified
+             contact_info
              update_unverified
-             update_unverified_youtube
              verification
              verification_choose_method
              verification_dns_record
@@ -44,9 +44,7 @@ class PublishersController < ApplicationController
              statement_ready
              update
              uphold_status
-             uphold_verified
-             youtube_channels
-             youtube_home)
+             uphold_verified)
   before_action :update_publisher_verification_method,
     only: %i(verification_dns_record
              verification_public_file
@@ -131,16 +129,6 @@ class PublishersController < ApplicationController
     end
   end
 
-  def update_unverified_youtube
-    @publisher = current_publisher
-    success = @publisher.update(publisher_update_unverified_youtube_params)
-    if success
-      redirect_to publisher_google_oauth2_omniauth_authorize_path
-    else
-      render(:email_verified_youtube)
-    end
-  end
-
   # "Magic sign in link" / One time sign-in token via email
   def new_auth_token
     @publisher = Publisher.new
@@ -205,7 +193,7 @@ class PublishersController < ApplicationController
     @publisher = current_publisher
   end
 
-  def youtube_email_verified
+  def contact_info
     @publisher = current_publisher
   end
 
@@ -295,9 +283,10 @@ class PublishersController < ApplicationController
     # ToDo: rework this process?
     current_publisher.wallet
 
-    PublisherYoutubeChannelSyncer.new(publisher: current_publisher,
-                                      token: session['google_oauth2_credentials_token']).perform
-
+    if session['google_oauth2_credentials_token']
+      PublisherYoutubeChannelSyncer.new(publisher: current_publisher,
+                                        token: session['google_oauth2_credentials_token']).perform
+    end
   end
 
   def log_out
@@ -400,10 +389,6 @@ class PublishersController < ApplicationController
 
   def publisher_update_unverified_params
     params.require(:publisher).permit(:brave_publisher_id, :name, :phone, :show_verification_status)
-  end
-
-  def publisher_update_unverified_youtube_params
-    params.require(:publisher).permit(:name, :phone, :show_verification_status)
   end
 
   def publisher_create_auth_token_params
