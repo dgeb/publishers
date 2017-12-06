@@ -32,7 +32,7 @@ class PublisherYoutubeChannelSyncer
       elsif publisher.publication_type == :unselected
         channel_attrs[:id] = channel_json['id']
 
-        unless Publisher.youtube_channel_in_use(channel_attrs[:id])
+        unless YoutubeChannelDetails.youtube_channel_in_use(channel_attrs[:id])
           # The channel may exist, but not be associated with a publisher. In this case we'll update it
           channel = YoutubeChannel.where(id: channel_attrs[:id]).assign_or_new(channel_attrs)
           publisher.youtube_channel = channel

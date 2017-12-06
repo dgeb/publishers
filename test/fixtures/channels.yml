@@ -1,0 +1,34 @@
+default: &default
+  publisher: default
+  show_verification_status: true
+  details: default_details (SiteChannelDetails)
+
+verified:
+  publisher: verified
+  show_verification_status: true
+  details: verified_details (SiteChannelDetails)
+
+fake1:
+  publisher: fake1
+  details: fake1_details (SiteChannelDetails)
+
+fake2:
+  publisher: fake2
+  details: fake2_details (SiteChannelDetails)
+
+uphold_connected:
+  publisher: uphold_connected
+  show_verification_status: true
+  details: uphold_connected_details (SiteChannelDetails)
+
+youtube_initial:
+  publisher: youtube_initial
+  details: youtube_initial_details (YoutubeChannelDetails)
+
+youtube_new:
+  publisher: youtube_new
+  details: youtube_new_details (YoutubeChannelDetails)
+
+google_verified:
+  publisher: google_verified
+  details: google_verified_details (YoutubeChannelDetails)

@@ -12,3 +12,8 @@ some_other_channel:
   id: "78032"
   title: "Some Other Guy's Channel"
   thumbnail_url: "https://some_image_host.com/some_image.png"
+
+alice_yt_channel:
+  id: "234234523"
+  title: "Alice's Channel"
+  thumbnail_url: "https://some_image_host.com/some_image.png"

@@ -5,8 +5,9 @@ module Publishers
 
       refresh_eyeshade = false
 
-      existing_publisher = Publisher.where(auth_provider: oauth_response.provider, auth_user_id: oauth_response.uid).
-          where.not(youtube_channel_id: nil).first
+      existing_publisher = Publisher.joins(:youtube_channel_details).
+          where("youtube_channel_details.auth_provider": oauth_response.provider, "youtube_channel_details.auth_user_id": oauth_response.uid).
+          where.not("youtube_channel_details.youtube_channel_id": nil).first
 
       # The presence of a current_publisher may indicate we're attempting to attach a channel to an email verified
       # publisher OR it's an attempt to log in using oauth.

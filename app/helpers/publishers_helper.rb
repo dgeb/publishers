@@ -1,4 +1,6 @@
 module PublishersHelper
+  include ChannelsHelper
+
   def publisher_can_receive_funds?(publisher)
     publisher.uphold_status == :verified
   end
@@ -188,20 +190,22 @@ module PublishersHelper
   end
 
   def publisher_next_step_path(publisher)
-    if publisher.verified?
-      home_publishers_path
-    elsif publisher.brave_publisher_id.blank?
-      email_verified_publishers_path
-    else
-      case publisher.detected_web_host
-        when "wordpress"
-          verification_wordpress_publishers_path
-        when "github"
-          verification_github_publishers_path
-        else
-          verification_choose_method_publishers_path
-      end
-    end
+    home_publishers_path
+    #
+    # if publisher.verified?
+    #   home_publishers_path
+    # elsif publisher.brave_publisher_id.blank?
+    #   email_verified_publishers_path
+    # else
+    #   case publisher.detected_web_host
+    #     when "wordpress"
+    #       verification_wordpress_publishers_path
+    #     when "github"
+    #       verification_github_publishers_path
+    #     else
+    #       verification_choose_method_publishers_path
+    #   end
+    # end
   end
 
   # NOTE: Be careful! This link logs the publisher a back in.
@@ -294,5 +298,17 @@ module PublishersHelper
 
   def u2f_enabled?(publisher)
     publisher.u2f_registrations.any?
+  end
+
+  def channel_edit_link(channel)
+    case channel.details
+      when SiteChannelDetails
+        link_to(home_publishers_path)
+
+      when YoutubeChannelDetails
+
+      else
+        link_to(home_publishers_path)
+    end
   end
 end

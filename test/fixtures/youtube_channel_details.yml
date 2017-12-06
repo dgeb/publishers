@@ -1,0 +1,14 @@
+youtube_initial_details:
+  auth_user_id:
+  auth_provider:
+  youtube_channel_id:
+
+youtube_new_details:
+  auth_user_id: "abc123"
+  auth_provider: "google_oauth2"
+  youtube_channel_id: "323541525412313421"
+
+google_verified_details:
+  auth_user_id: "abc123"
+  auth_provider: "google_oauth2"
+  youtube_channel_id: "78032"

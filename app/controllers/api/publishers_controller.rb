@@ -18,9 +18,7 @@ class Api::PublishersController < Api::BaseController
   end
 
   def index_by_brave_publisher_id
-    publishers = Publisher.where(
-      brave_publisher_id: params[:brave_publisher_id]
-    )
+    publishers = Publisher.joins(:site_channel_details).where("site_channel_details.brave_publisher_id": params[:brave_publisher_id])
     render(json: publishers)
   end
 
@@ -41,7 +39,7 @@ class Api::PublishersController < Api::BaseController
   end
 
   def destroy
-    Publisher.where(brave_publisher_id: params[:brave_publisher_id], verified: false).destroy_all
+    Publisher.joins(:channel).joins(:site_channel_details).where("site_channel_details.brave_publisher_id": params[:brave_publisher_id], "channels.verified": false).destroy_all
     render(json: { message: "success" })
   end
 
@@ -52,10 +50,8 @@ class Api::PublishersController < Api::BaseController
   end
 
   def require_verified_publisher
-    @publisher = Publisher.find_by(
-      brave_publisher_id: params[:brave_publisher_id],
-      verified: true
-    )
+    @publisher = Publisher.joins(:channel).joins(:site_channel_details).
+        find_by("site_channel_details.brave_publisher_id": params[:brave_publisher_id], "channels.verified": true)
     return @publisher if @publisher
     response = {
       error: "Invalid publisher",

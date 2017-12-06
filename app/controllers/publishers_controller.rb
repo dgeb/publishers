@@ -8,14 +8,16 @@ class PublishersController < ApplicationController
   before_action :authenticate_via_token,
     only: %i(show)
   before_action :authenticate_publisher!,
-    except: %i(create
+    except: %i(sign_up
+               create
                create_auth_token
                create_done
                new
                new_auth_token
                resend_email_verify_email)
   before_action :require_unauthenticated_publisher,
-    only: %i(create
+    only: %i(sign_up
+             create
              create_auth_token
              new
              new_auth_token)
@@ -52,6 +54,10 @@ class PublishersController < ApplicationController
              verification_support_queue
              verification_github
              verification_wordpress)
+
+  def sign_up
+
+  end
 
   def create
     if params[:email].blank?
@@ -209,10 +215,8 @@ class PublishersController < ApplicationController
       return
     end
 
-    emailer = PublisherLoginLinkEmailer.new(
-      brave_publisher_id: publisher_create_auth_token_params[:brave_publisher_id],
-      email: publisher_create_auth_token_params[:email]
-    )
+    emailer = PublisherLoginLinkEmailer.new(email: publisher_create_auth_token_params[:email])
+
     if emailer.perform
       # Success shown in view #create_auth_token
     else
@@ -356,6 +360,10 @@ class PublishersController < ApplicationController
     path = after_sign_out_path_for(current_publisher)
     sign_out(current_publisher)
     redirect_to(path)
+  end
+
+  def choose_new_channel_type
+
   end
 
   def generate_statement

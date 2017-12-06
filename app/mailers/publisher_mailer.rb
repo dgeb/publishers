@@ -79,7 +79,7 @@ class PublisherMailer < ApplicationMailer
     end
     mail(
         to: @publisher.pending_email,
-        subject: default_i18n_subject(publication_title: @publisher.publication_title)
+        subject: default_i18n_subject
     )
   end
 

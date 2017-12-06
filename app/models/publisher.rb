@@ -8,6 +8,12 @@ class Publisher < ApplicationRecord
   has_many :u2f_registrations, -> { order("created_at DESC") }
   has_one :totp_registration
 
+  has_many :channels, :dependent => :destroy, validate: true, autosave: true
+  has_many :site_channel_details, through: :channel, source: :details, source_type: 'SiteChannelDetails'
+  has_many :youtube_channel_details, through: :channel, source: :details, source_type: 'YoutubeChannelDetails'
+
+  before_create :build_default_channel
+
   attr_encrypted :authentication_token, key: :encryption_key
   attr_encrypted :uphold_code, key: :encryption_key
   attr_encrypted :uphold_access_parameters, key: :encryption_key
@@ -17,9 +23,9 @@ class Publisher < ApplicationRecord
   # Normalizes attribute before validation and saves into other attribute
   phony_normalize :phone, as: :phone_normalized, default_country_code: "US"
 
-  validates :email, email: { strict_mode: true }, presence: true, if: -> { brave_publisher_id.present? }
+  validates :email, email: { strict_mode: true }, presence: true, unless: -> { pending_email.present? }
   validates :pending_email, email: { strict_mode: true }, presence: true, if: -> { email.blank? }
-  validates :name, presence: true, if: -> { brave_publisher_id.present? }
+  # validates :name, presence: true, if: -> { brave_publisher_id.present? }
   validates :phone_normalized, phony_plausible: true
 
   # uphold_code is an intermediate step to acquiring uphold_access_parameters
@@ -32,29 +38,6 @@ class Publisher < ApplicationRecord
   # uphold_access_parameters should be cleared once uphold_verified has been set
   # (see `verify_uphold` method below)
   validates :uphold_access_parameters, absence: true, if: -> { uphold_verified? }
-
-  # brave_publisher_id is a normalized identifier provided by ledger API
-  # It is like base domain (eTLD + left part) but may include additional
-  # formats to support more publishers.
-  validates :brave_publisher_id, uniqueness: { if: -> { brave_publisher_id.present? && brave_publisher_id_changed? && verified_publisher_exists? } }
-
-  validate :youtube_channel_not_changed_once_initialized
-  validates_uniqueness_of :youtube_channel_id, if: -> { youtube_channel_id.present? }
-
-  # ensure that site publishers do not have oauth credentials (and vice versa)
-  validates :brave_publisher_id, absence: true, if: -> { auth_user_id.present? }
-  validates :auth_user_id, absence: true, if: -> { brave_publisher_id.present? }
-
-  # ensure that site publishers do not mix:
-  # - normalized and unnormalized domains
-  # - normalized domains and domain-related errors
-  validates :brave_publisher_id, absence: true, if: -> { brave_publisher_id_error_code.present? || brave_publisher_id_unnormalized.present? }
-
-  # clear/register domain errors as appropriate
-  before_validation :clear_brave_publisher_id_error, if: -> { brave_publisher_id_unnormalized.present? && brave_publisher_id_unnormalized_changed? }
-  before_validation :register_brave_publisher_id_error, if: -> { brave_publisher_id_unnormalized.present? && brave_publisher_id_error_code.present? }
-
-  after_validation :generate_verification_token, if: -> { brave_publisher_id.present? && brave_publisher_id_changed? }
 
   before_destroy :dont_destroy_verified_publishers
 
@@ -109,17 +92,17 @@ class Publisher < ApplicationRecord
     Publisher.encryption_key
   end
 
+  def verified?
+    email.present?
+  end
+
   def publication_title
-    case publication_type
-    when :site
-      brave_publisher_id
-    when :youtube_channel
-      youtube_channel.title
-    end
+    # ToDo: Fix mailers to not use this?
+    name
   end
 
   def to_s
-    publication_title
+    name
   end
 
   def prepare_uphold_state_token
@@ -171,72 +154,21 @@ class Publisher < ApplicationRecord
     self.uphold_updated_at = Time.now
   end
 
-  def publication_type
-    if self.brave_publisher_id.present?
-      :site
-    elsif self.youtube_channel_id.present?
-      :youtube_channel
-    else
-      :unselected
-    end
-  end
-
   def owner_identifier
     return nil if auth_user_id.blank?
     "oauth#google:#{auth_user_id}"
   end
 
-  def brave_publisher_id_error_description
-    case self.brave_publisher_id_error_code.to_sym
-    when :exclusion_list_error
-      I18n.t("activerecord.errors.models.publisher.attributes.brave_publisher_id.exclusion_list_error")
-    when :api_error_cant_normalize
-      I18n.t("activerecord.errors.models.publisher.attributes.brave_publisher_id.api_error_cant_normalize")
-    when :invalid_uri
-      I18n.t("activerecord.errors.models.publisher.attributes.brave_publisher_id.invalid_uri")
-    when :taken
-      I18n.t("activerecord.errors.models.publisher.attributes.brave_publisher_id.taken")
-    else
-      raise "Unrecognized brave_publisher_id_error_code: #{self.brave_publisher_id_error_code}"
-    end
-  end
-
   private
 
-  def generate_verification_token
-    update_attribute(:verification_token, PublisherTokenRequester.new(publisher: self).perform)
-  end
-
-  def clear_brave_publisher_id_error
-    self.brave_publisher_id_error_code = nil
-  end
-
-  def register_brave_publisher_id_error
-    self.errors.add(
-      :brave_publisher_id_unnormalized,
-      self.brave_publisher_id_error_description
-    )
-  end
-
-  def verified_publisher_exists?
-    self.class.where(brave_publisher_id: brave_publisher_id, verified: true).any?
-  end
-
-  # verification to ensure youtube_channel is not changed
-  def youtube_channel_not_changed_once_initialized
-    return if youtube_channel_id_was.nil?
-
-    if youtube_channel_id_was != youtube_channel_id
-      errors.add(:youtube_channel_id, "can not change once initialized")
-    end
-  end
-
-  def self.youtube_channel_in_use(id)
-    self.where(youtube_channel_id: id).count > 0
-  end
-
   def dont_destroy_verified_publishers
-    throw :abort if verified?
+    # throw :abort if channel && channel.verified?
+  end
+
+  def build_default_channel
+    channel = Channel.new
+    channel.publisher = self
+    true
   end
 
   class << self

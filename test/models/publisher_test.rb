@@ -149,21 +149,6 @@ class PublisherTest < ActiveSupport::TestCase
     end
   end
 
-  test "a publisher cannot be associated with both a site and auth credentials" do
-    publisher = publishers(:verified)
-    assert publisher.valid?
-
-    publisher.auth_user_id = '123'
-    refute publisher.valid?
-
-    publisher.brave_publisher_id = nil
-    assert publisher.valid?
-
-    publisher.auth_user_id = nil
-    publisher.brave_publisher_id = 'example.com'
-    assert publisher.valid?
-  end
-
   test "a publisher cannot change youtube channels" do
     publisher = publishers(:youtube_initial)
     assert publisher.valid?
@@ -244,7 +229,7 @@ class PublisherTest < ActiveSupport::TestCase
     publisher.brave_publisher_id_error_code = :invalid_uri
 
     refute publisher.valid?
-    assert_equal [:brave_publisher_id], publisher.errors.keys
+    assert_equal [:"channel.details.brave_publisher_id"], publisher.errors.keys
     assert_equal "invalid_uri", publisher.brave_publisher_id_error_code
     assert_equal I18n.t("activerecord.errors.models.publisher.attributes.brave_publisher_id.invalid_uri"), publisher.brave_publisher_id_error_description
   end

@@ -55,6 +55,9 @@ en:
     contact_person: "Contact person"
     contact: "Contact"
     copy_to_clipboard: "Copy to clipboard"
+    sign_up_header: "Join Brave Payments"
+
+
     create_done_header: "An email is on its way!"
     create_done_body_html: |
       <p>We're excited that you want to be in on Brave Payments. We just sent an email to
@@ -76,12 +79,10 @@ en:
     edit_contact: "Edit Contact"
     uphold_check_balance: "Check Balance"
     email_confirmed: "Your updated email address %{email} has been confirmed."
-    log_in_for_youtube: "For YouTube creators, please log in with your Google account."
-    log_in_for_site: "Enter your domain to log in. You will receive a login link at the email address that was used to verify your domain."
-    log_in_with_google_button: "Log in with Google"
     log_out: "Log out"
     new: "Contact Information"
-    new_auth_token: "Log in to Brave Payments"
+    log_in: "Log In"
+    enter_your_email: "Enter your email"
     new_auth_token_button: "Email me a link to log in"
     new_auth_token_email_html: |
       Email Address <span class="optional">(for unverified domains)</span>
@@ -89,6 +90,7 @@ en:
     new_auth_token_publisher_not_found_part_two: "start a new verification."
     new_auth_token_wrong_email_publisher_not_verified: "Email doesn't match the publisher verification. Please try again or start a new verification."
     new_auth_token_wrong_email_publisher_verified: "Email doesn't match the publisher verification. Try leaving email blank to use the most recent email."
+    new_channel: "+ Add Channel"
     not_verified: "Unverified"
     progress:
       contact_info: "Contact Info"
@@ -318,7 +320,8 @@ en:
         of fans may have already filled your wallet!</p>
     landing_new_header: "New to Brave Payments?"
     landing_new_body: "Start verification by entering your email."
-    landing_login_body_html: "<strong>Already verified?</strong> Log in to your publisher dashboard."
+    landing_login: "Already have an account?"
+    landing_login_body: "Log in to your dashboard."
     landing_login_button: "Log in"
     landing_begin_button: "Get Started"
   two_factor_authentications:
@@ -478,3 +481,7 @@ en:
     channel_not_found: "Channel not found"
     channel_already_taken: "Channel already taken"
     oauth_error: "Error connecting to YouTube"
+  channel:
+    requires_uninitialized_channel: "An uninitialized channel is required"
+    requires_other_channel_type: "This pages is not valid for this channel type"
+    enter_domain: "Enter Domain Info"
