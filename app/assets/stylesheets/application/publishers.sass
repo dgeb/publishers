@@ -5,6 +5,7 @@ $progress-train-fill: #FF4D3F
 $progress-train-active: #333
 
 body[data-controller="publishers"],
+body[data-controller="site_channels"],
 body[data-controller="two_factor_authentications"],
 body[data-controller="two_factor_registrations"],
 body[data-controller="totp_registrations"],
@@ -367,7 +368,6 @@ body[data-controller="publishers"]
   &[data-action="verification_public_file"],
   &[data-action="verification_github"],
   &[data-action="verification_wordpress"],
-  &[data-action="verification_choose_method"],
   &[data-action="verify"]
     .hidden_form > *,
     #verification_in_progress
@@ -681,7 +681,8 @@ body[data-controller="publishers"]
         background: #fff
         border-radius: 0
 
-  &[data-action="email_verified"]
+  &[data-action="email_verified"],
+  &[data-action="choose_new_channel_type"]
     .publisher-panel
       margin-top: 40px
     h1
