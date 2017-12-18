@@ -8,6 +8,11 @@ verified:
   show_verification_status: true
   details: verified_details (SiteChannelDetails)
 
+completed:
+  publisher: completed
+  show_verification_status: false
+  details: completed_details (SiteChannelDetails)
+
 fake1:
   publisher: fake1
   details: fake1_details (SiteChannelDetails)
