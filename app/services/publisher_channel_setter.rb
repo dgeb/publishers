@@ -1,9 +1,10 @@
 # Ask Eyeshade to assign youtube channels to a Publisher.
 class PublisherChannelSetter < BaseApiClient
-  attr_reader :publisher
+  attr_reader :publisher, :channel
 
-  def initialize(publisher:)
+  def initialize(publisher:, channel:)
     @publisher = publisher
+    @channel = channel
   end
 
   def perform

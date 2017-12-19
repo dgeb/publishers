@@ -3,10 +3,9 @@ class YoutubeChannelDetails < ApplicationRecord
 
   has_one :channel, as: :details
 
-  belongs_to :youtube_channel
-
   validate :youtube_channel_not_changed_once_initialized
-  validates_uniqueness_of :youtube_channel_id, if: -> { youtube_channel_id.present? }
+  validates_presence_of :youtube_channel_id
+  validates_presence_of :title
 
   private
 
@@ -18,9 +17,4 @@ class YoutubeChannelDetails < ApplicationRecord
       errors.add(:youtube_channel_id, "can not change once initialized")
     end
   end
-
-  def self.youtube_channel_in_use(id)
-    self.where(youtube_channel_id: id).count > 0
-  end
-
 end

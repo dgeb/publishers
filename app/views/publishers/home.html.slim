@@ -370,6 +370,10 @@ noscript
   .row.channels_row
     .col.col-details.col-md-12.col-xs-10.col-xs-center.col-sm-center
       = link_to(channel.title, channel_next_step_path(channel))
+- current_publisher.channels.visible_youtube_channels.each do |channel|
+  .row.channels_row
+    .col.col-details.col-md-12.col-xs-10.col-xs-center.col-sm-center
+      = link_to(channel.title, channel_next_step_path(channel))
 .row.tos-row
   .col.col-details.col-md-6.col-md-push-6.col-xs-10.col-xs-center.col-sm-center
     .terms-of-service

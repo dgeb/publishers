@@ -72,7 +72,7 @@ class SiteChannelVerifier < BaseApiClient
   end
 
   def verify_offline_publisher_id
-    Rails.logger.info("PublisherVerifier offline by #{channel.details.verification_method}")
+    # Rails.logger.info("PublisherVerifier offline by #{channel.details.verification_method}")
 
     case channel.details.verification_method
       when "dns_record"

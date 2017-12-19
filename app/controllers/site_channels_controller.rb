@@ -47,9 +47,9 @@ class SiteChannelsController < ApplicationController
 
     respond_to do |format|
       if current_channel.save
-        format.html {redirect_to(channel_next_step_path(current_channel), :notice => 'ToDo: Channel was successfully created.')}
+        format.html { redirect_to(channel_next_step_path(current_channel), notice: t("channel.channel_created")) }
       else
-        format.html {render :action => "new"}
+        format.html { render :action => "new" }
       end
     end
   end

@@ -480,8 +480,10 @@ en:
     account_not_found: "Couldn't find a matching publisher record"
     channel_not_found: "Channel not found"
     channel_already_taken: "Channel already taken"
+    channel_already_registered: "You have already registered this YouTube channel."
     oauth_error: "Error connecting to YouTube"
   channel:
     requires_uninitialized_channel: "An uninitialized channel is required"
     requires_other_channel_type: "This pages is not valid for this channel type"
     enter_domain: "Enter Domain Info"
+    channel_created: "Channel created."

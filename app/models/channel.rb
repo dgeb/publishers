@@ -39,7 +39,7 @@ class Channel < ApplicationRecord
       when SiteChannelDetails
         details.brave_publisher_id
       when YoutubeChannelDetails
-        details.youtube_channel.title
+        details.title
     end
   end
 

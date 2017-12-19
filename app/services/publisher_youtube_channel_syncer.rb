@@ -9,8 +9,7 @@ class PublisherYoutubeChannelSyncer
   def perform
     # Get the channel information. Will search for the token identified user's channel, or of it's already
     # set grab a refresh
-    channel_json = YoutubeChannelGetter.new(publisher: @publisher,
-                                            token: @token,
+    channel_json = YoutubeChannelGetter.new(token: @token,
                                             channel_id: @publisher.youtube_channel_id).perform
 
     if channel_json.is_a?(Hash)

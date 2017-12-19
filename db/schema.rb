@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171212030656) do
+ActiveRecord::Schema.define(version: 20171219155706) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -72,6 +72,16 @@ ActiveRecord::Schema.define(version: 20171212030656) do
     t.index ["verification_token"], name: "index_legacy_publishers_on_verification_token", using: :btree
     t.index ["verified"], name: "index_legacy_publishers_on_verified", using: :btree
     t.index ["youtube_channel_id"], name: "index_legacy_publishers_on_youtube_channel_id", using: :btree
+  end
+
+  create_table "legacy_youtube_channels", id: :string, force: :cascade do |t|
+    t.string   "title"
+    t.string   "description"
+    t.string   "thumbnail_url"
+    t.integer  "subscriber_count"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+    t.index ["id"], name: "index_legacy_youtube_channels_on_id", unique: true, using: :btree
   end
 
   create_table "publisher_statements", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
@@ -171,17 +181,11 @@ ActiveRecord::Schema.define(version: 20171212030656) do
     t.string   "auth_name"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
-    t.index ["youtube_channel_id"], name: "index_youtube_channel_details_on_youtube_channel_id", unique: true, using: :btree
-  end
-
-  create_table "youtube_channels", id: :string, force: :cascade do |t|
     t.string   "title"
     t.string   "description"
     t.string   "thumbnail_url"
     t.integer  "subscriber_count"
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
-    t.index ["id"], name: "index_youtube_channels_on_id", unique: true, using: :btree
+    t.index ["youtube_channel_id"], name: "index_youtube_channel_details_on_youtube_channel_id", unique: true, using: :btree
   end
 
 end
