@@ -13,7 +13,7 @@ class ChannelTest < ActiveSupport::TestCase
     channel = channels(:google_verified)
     assert channel.valid?
 
-    assert_equal "Some Other Guy's Channel", channel.details.youtube_channel.title
+    assert_equal "Some Other Guy's Channel", channel.details.title
   end
 
   test "channel can not change details" do
