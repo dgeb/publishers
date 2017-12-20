@@ -4,21 +4,21 @@ class Publisher < ApplicationRecord
   UPHOLD_CODE_TIMEOUT = 5.minutes
   UPHOLD_ACCESS_PARAMS_TIMEOUT = 2.hours
 
+  devise :timeoutable, :trackable, :omniauthable
+
   has_many :statements, -> { order('created_at DESC') }, class_name: 'PublisherStatement'
   has_many :u2f_registrations, -> { order("created_at DESC") }
   has_one :totp_registration
 
-  has_many :channels, :dependent => :destroy, validate: true, autosave: true
+  has_many :channels, validate: true, autosave: true
   has_many :site_channel_details, through: :channel, source: :details, source_type: 'SiteChannelDetails'
   has_many :youtube_channel_details, through: :channel, source: :details, source_type: 'YoutubeChannelDetails'
 
-  before_create :build_default_channel
+  belongs_to :youtube_channel
 
   attr_encrypted :authentication_token, key: :encryption_key
   attr_encrypted :uphold_code, key: :encryption_key
   attr_encrypted :uphold_access_parameters, key: :encryption_key
-
-  devise :timeoutable, :trackable, :omniauthable
 
   # Normalizes attribute before validation and saves into other attribute
   phony_normalize :phone, as: :phone_normalized, default_country_code: "US"
@@ -39,9 +39,8 @@ class Publisher < ApplicationRecord
   # (see `verify_uphold` method below)
   validates :uphold_access_parameters, absence: true, if: -> { uphold_verified? }
 
-  before_destroy :dont_destroy_verified_publishers
-
-  belongs_to :youtube_channel
+  before_create :build_default_channel
+  before_destroy :dont_destroy_publishers_with_channels
 
   scope :created_recently, -> { where("created_at > :start_date", start_date: 1.week.ago) }
 
@@ -155,14 +154,17 @@ class Publisher < ApplicationRecord
   end
 
   def owner_identifier
-    return nil if auth_user_id.blank?
-    "oauth#google:#{auth_user_id}"
+    # ToDo: Need new Owner Id Rules
+    "owner:#{id}"
   end
 
   private
 
-  def dont_destroy_verified_publishers
-    # throw :abort if channel && channel.verified?
+  def dont_destroy_publishers_with_channels
+    if channels.count > 0
+      errors.add(:base, "cannot delete publisher while channels exist")
+      throw :abort
+    end
   end
 
   def build_default_channel
