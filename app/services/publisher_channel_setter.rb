@@ -12,9 +12,9 @@ class PublisherChannelSetter < BaseApiClient
 
     payload = {
       "authorizer" => {
-        "owner" => publisher.owner_identifier,
-        "ownerEmail" => publisher.auth_email,
-        "ownerName" => publisher.auth_name
+        "owner" => channel.details.owner_identifier,
+        "ownerEmail" => channel.details.auth_email,
+        "ownerName" => channel.details.auth_name
       }.compact,
       "contactInfo" => {
         "name" => publisher.name,
@@ -23,8 +23,8 @@ class PublisherChannelSetter < BaseApiClient
       }.compact,
       "providers" => [
         {
-          "publisher" => publisher.youtube_channel.channel_identifier,
-          "show_verification_status" => publisher.show_verification_status?
+          "publisher" => channel.details.channel_identifier,
+          "show_verification_status" => channel.show_verification_status?
         }
       ]
     }
