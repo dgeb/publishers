@@ -10,8 +10,8 @@ class SiteChannelDetails < ApplicationRecord
 
   # - normalized and unnormalized domains
   # - normalized domains and domain-related errors
-  # ToDo: Reinstate this
-  # validates :brave_publisher_id, absence: true, if: -> { brave_publisher_id_error_code.present? || brave_publisher_id_unnormalized.present? }
+  validates :brave_publisher_id, absence: true, if: -> { brave_publisher_id_error_code.present? || brave_publisher_id_unnormalized.present? }
+  validate :brave_publisher_id_not_changed_once_initialized
 
   before_validation :register_brave_publisher_id_error, if: -> { brave_publisher_id_unnormalized.present? && brave_publisher_id_error_code.present? }
 
@@ -22,6 +22,10 @@ class SiteChannelDetails < ApplicationRecord
 
   def initialized?
     brave_publisher_id.present? || brave_publisher_id_unnormalized.present?
+  end
+
+  def publication_title
+    brave_publisher_id
   end
 
   def brave_publisher_id_error_description
@@ -39,7 +43,7 @@ class SiteChannelDetails < ApplicationRecord
 
   def inspect_brave_publisher_id
     require "faraday"
-    result = PublisherHostInspector.new(brave_publisher_id: self.brave_publisher_id).perform
+    result = SiteChannelHostInspector.new(brave_publisher_id: self.brave_publisher_id).perform
     if result[:host_connection_verified]
       self.supports_https = result[:https]
       self.detected_web_host = result[:web_host]
@@ -70,5 +74,14 @@ class SiteChannelDetails < ApplicationRecord
         :brave_publisher_id_unnormalized,
         self.brave_publisher_id_error_description
     )
+  end
+
+  # verification to ensure brave_publisher_id is not changed
+  def brave_publisher_id_not_changed_once_initialized
+    return if brave_publisher_id_was.nil?
+
+    if brave_publisher_id_was != brave_publisher_id
+      errors.add(:brave_publisher_id, "can not change once initialized")
+    end
   end
 end

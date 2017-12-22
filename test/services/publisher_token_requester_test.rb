@@ -36,9 +36,9 @@ class PublisherTokenRequesterTest < ActiveJob::TestCase
     begin
       Rails.application.secrets[:api_eyeshade_offline] = false
 
-      publisher = publishers(:default)
-      publisher.brave_publisher_id = 'example.com'
-      publisher.show_verification_status = true
+      channel = channels(:default)
+      channel.details.brave_publisher_id = 'example.com'
+      channel.show_verification_status = true
 
       stub_request(:get, /v1\/publishers\/example\.com\/verifications\/#{publisher.id}\?show_verification_status\=true/)
           .to_return(status: 200, body: "{\"token\":\"abc123\"}", headers: {})

@@ -154,8 +154,7 @@ class Publisher < ApplicationRecord
   end
 
   def owner_identifier
-    # ToDo: Need new Owner Id Rules
-    "owner:#{id}"
+    "uuid#publishers:#{id}"
   end
 
   private

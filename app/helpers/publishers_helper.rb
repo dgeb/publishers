@@ -253,7 +253,7 @@ module PublishersHelper
   end
 
   def publisher_statement_filename(publisher_statement)
-    publisher_id = publisher_statement.publisher.brave_publisher_id
+    publisher_id = publisher_statement.publisher.name
     date = publisher_statement.created_at.to_date.iso8601
     period = publisher_statement.period.to_s.gsub('_', '-')
 

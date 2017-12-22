@@ -33,14 +33,8 @@ class Channel < ApplicationRecord
     Channel.visible_site_channels.or(Channel.visible_youtube_channels)
   }
 
-
-  def title
-    case details
-      when SiteChannelDetails
-        details.brave_publisher_id
-      when YoutubeChannelDetails
-        details.title
-    end
+  def publication_title
+    details.publication_title
   end
 
   def details_not_changed?

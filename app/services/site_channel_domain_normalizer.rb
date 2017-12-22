@@ -1,5 +1,5 @@
 # Normalize a domain by calling the relevant ledger endpoint
-class PublisherDomainNormalizer < BaseApiClient
+class SiteChannelDomainNormalizer < BaseApiClient
   attr_reader :domain
 
   def initialize(domain:)
@@ -29,7 +29,7 @@ class PublisherDomainNormalizer < BaseApiClient
   def perform_offline
     # Development Gemfile group. If you run in prod move the gem to the top level.
     require "domain_name"
-    Rails.logger.info("PublisherDomainNormalizer normalizing offline.")
+    Rails.logger.info("SiteChannelDomainNormalizer normalizing offline.")
     domain_name = DomainName(domain)
     unless domain_name.canonical_tld?
       raise DomainExclusionError.new("Normalized publisher ID unavailable for #{domain}")

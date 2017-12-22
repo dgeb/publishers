@@ -137,44 +137,44 @@ class PublishersController < ApplicationController
     end
   end
 
-  def update_unverified
-    @publisher = current_publisher
-    @publisher.brave_publisher_id = nil
-    success = @publisher.update(publisher_update_unverified_params)
-
-    respond_to do |format|
-      format.json {
-        if success
-          # Set the publisher's domain asynchronously when the form is submitted with xhr.
-          # The results of the domain normalization and inspection will be polled afterward.
-          if @publisher.brave_publisher_id_unnormalized
-            SetPublisherDomainJob.perform_later(publisher_id: @publisher.id)
-          end
-
-          head :no_content
-        else
-          render(json: { errors: @publisher.errors }, status: 400)
-        end
-      }
-      format.html {
-        # Set the publisher's domain synchronously when the form is submitted without xhr.
-        # The results of the domain normalization and inspection must be indicated immediately.
-        #
-        # NOTE: These requests are in danger of being long-running. However, this code path should
-        # only be reached when JS is disabled.
-        if success && @publisher.brave_publisher_id_unnormalized
-          PublisherDomainSetter.new(publisher: @publisher).perform
-          success = @publisher.save
-        end
-
-        if success
-          redirect_to(publisher_next_step_path(@publisher))
-        else
-          render(:contact_info)
-        end
-      }
-    end
-  end
+  # def update_unverified
+  #   @publisher = current_publisher
+  #   @publisher.brave_publisher_id = nil
+  #   success = @publisher.update(publisher_update_unverified_params)
+  #
+  #   respond_to do |format|
+  #     format.json {
+  #       if success
+  #         # Set the publisher's domain asynchronously when the form is submitted with xhr.
+  #         # The results of the domain normalization and inspection will be polled afterward.
+  #         if @publisher.brave_publisher_id_unnormalized
+  #           SetPublisherDomainJob.perform_later(publisher_id: @publisher.id)
+  #         end
+  #
+  #         head :no_content
+  #       else
+  #         render(json: { errors: @publisher.errors }, status: 400)
+  #       end
+  #     }
+  #     format.html {
+  #       # Set the publisher's domain synchronously when the form is submitted without xhr.
+  #       # The results of the domain normalization and inspection must be indicated immediately.
+  #       #
+  #       # NOTE: These requests are in danger of being long-running. However, this code path should
+  #       # only be reached when JS is disabled.
+  #       if success && @publisher.brave_publisher_id_unnormalized
+  #         PublisherDomainSetter.new(publisher: @publisher).perform
+  #         success = @publisher.save
+  #       end
+  #
+  #       if success
+  #         redirect_to(publisher_next_step_path(@publisher))
+  #       else
+  #         render(:contact_info)
+  #       end
+  #     }
+  #   end
+  # end
 
   def domain_status
     publisher = current_publisher
@@ -292,13 +292,13 @@ class PublishersController < ApplicationController
     redirect_to(publisher_last_verification_method_path(@publisher), alert: t("shared.api_error"))
   end
 
-  # TODO: Rate limit and perform async
-  def check_for_https
-    @publisher = current_publisher
-    PublisherDomainSetter.new(publisher: @publisher).perform
-    @publisher.save!
-    redirect_to(publisher_last_verification_method_path(@publisher), alert: t("publishers.https_inspection_complete"))
-  end
+  # # TODO: Rate limit and perform async
+  # def check_for_https
+  #   @publisher = current_publisher
+  #   PublisherDomainSetter.new(publisher: @publisher).perform
+  #   @publisher.save!
+  #   redirect_to(publisher_last_verification_method_path(@publisher), alert: t("publishers.https_inspection_complete"))
+  # end
 
   def uphold_verified
     @publisher = current_publisher

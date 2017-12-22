@@ -123,7 +123,7 @@ class PublisherTest < ActiveSupport::TestCase
       publisher = publishers(:uphold_connected)
       assert publisher.uphold_verified
 
-      stub_request(:get, /v1\/owners\/owner:#{URI.escape(publisher.id)}\/wallet/).
+      stub_request(:get, /v1\/owners\/#{URI.escape(publisher.owner_identifier)}\/wallet/).
           with(headers: {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Faraday v0.9.2'}).
           to_return(status: 200, body: body, headers: {})
 
@@ -265,5 +265,11 @@ class PublisherTest < ActiveSupport::TestCase
     publisher.uphold_access_parameters = "foo"
     publisher.save
     assert publisher.uphold_updated_at > 30.minutes.ago
+  end
+
+  test "formats owner_identifier correctly" do
+    publisher = publishers(:default)
+
+    assert_equal "uuid#publishers:02e81b29-f150-54b9-9a08-ce75944f6889", publisher.owner_identifier
   end
 end

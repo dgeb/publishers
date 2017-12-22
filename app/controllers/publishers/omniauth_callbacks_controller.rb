@@ -45,14 +45,13 @@ module Publishers
 
       @current_channel.save
 
-      # ToDo:
-      # begin
-      #   PublisherChannelSetter.new(publisher: publisher).perform
-      # rescue => e
-      #   # ToDo: What do we do if call to eyeshade fails
-      #   require "sentry-raven"
-      #   Raven.capture_exception(e)
-      # end
+      begin
+        PublisherChannelSetter.new(publisher: publisher).perform
+      rescue => e
+        # ToDo: What do we do if call to eyeshade fails
+        require "sentry-raven"
+        Raven.capture_exception(e)
+      end
 
       redirect_to home_publishers_path, notice: t("channel.channel_created")
       return
