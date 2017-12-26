@@ -42,7 +42,6 @@ class SiteChannelsController < ApplicationController
     current_channel.details = SiteChannelDetails.new(channel_update_unverified_params)
 
     SetChannelDomainJob.perform_later(channel_id: current_channel.id)
-    current_channel.details.brave_publisher_id = current_channel.details.brave_publisher_id_unnormalized
 
     respond_to do |format|
       if current_channel.save
