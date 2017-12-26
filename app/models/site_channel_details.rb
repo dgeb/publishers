@@ -25,7 +25,7 @@ class SiteChannelDetails < ApplicationRecord
   end
 
   def publication_title
-    brave_publisher_id
+    brave_publisher_id || brave_publisher_id_unnormalized
   end
 
   def brave_publisher_id_error_description
