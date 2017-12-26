@@ -53,13 +53,12 @@ class SiteChannelVerifier < BaseApiClient
   def update_verified_on_channel
     raise "#{verified_channel_id} missing" if verified_channel_id.blank?
 
-    @verified_channel = Channel.joins(:site_channel_details).find_by("site_channel_details.brave_publisher_id": brave_publisher_id, id: verified_channel_id)
-    verified_channel_changed = (verified_channel && verified_channel.details.verified == false)
-    return if !verified_channel_changed
+    @verified_channel = Channel.find(verified_channel_id)
+    return if @verified_channel.verified
 
-    verified_channel.details.update_attribute(:verified, true) if verified_channel_changed
+    verified_channel.update_attribute(:verified, true)
 
-    verified_channel_post_verify if verified_channel_changed
+    verified_channel_post_verify
   end
 
   def verified_channel_post_verify

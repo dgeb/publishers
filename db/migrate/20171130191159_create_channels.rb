@@ -4,7 +4,7 @@ class CreateChannels < ActiveRecord::Migration[5.0]
       t.belongs_to :publisher, type: :uuid
       t.boolean :created_via_api, default: false, null: false
       t.boolean :show_verification_status
-
+      t.boolean :verified, default: false
       t.references :details, type: :uuid, polymorphic: true, index: { unique: true}
       t.timestamps
     end
@@ -13,7 +13,6 @@ class CreateChannels < ActiveRecord::Migration[5.0]
       t.string :brave_publisher_id
       t.string :brave_publisher_id_unnormalized
       t.string :brave_publisher_id_error_code
-      t.boolean :verified, default: false
       t.string :verification_token
       t.string :verification_method
       t.boolean :supports_https, default: false

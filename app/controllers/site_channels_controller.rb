@@ -81,8 +81,8 @@ class SiteChannelsController < ApplicationController
         brave_publisher_id: current_channel.details.brave_publisher_id,
         channel: current_channel
     ).perform
-    current_channel.details.reload
-    if current_channel.details.verified?
+    current_channel.reload
+    if current_channel.verified?
       redirect_to(home_publishers_path)
     else
       render(:verification_background)
@@ -105,7 +105,7 @@ class SiteChannelsController < ApplicationController
   end
 
   def require_unverified_site
-    return if !current_channel.details.verified?
+    return if !current_channel.verified?
     redirect_to(channel_next_step_path(current_channel), alert: I18n.t("publishers.verification_already_done"))
   end
 

@@ -22,7 +22,7 @@ module ChannelsHelper
   end
 
   def site_channel_next_step_path(channel)
-    if channel.details.verified?
+    if channel.verified?
       # ToDo: Do we have a channel home?
       home_publishers_path
     else

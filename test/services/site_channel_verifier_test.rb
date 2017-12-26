@@ -25,11 +25,11 @@ class SiteChannelVerifierTest < ActiveSupport::TestCase
       c.details.verification_token = "ASDFG"
       c.details.save
 
-      refute c.details.verified?
+      refute c.verified?
       verifier = SiteChannelVerifier.new(brave_publisher_id: c.details.brave_publisher_id, channel: c)
       verifier.perform
       c.reload
-      assert c.details.verified?
+      assert c.verified?
 
     ensure
       Rails.application.secrets[:api_eyeshade_offline] = true
@@ -51,11 +51,11 @@ class SiteChannelVerifierTest < ActiveSupport::TestCase
       c.details.verification_token = "ASDFG"
       c.details.save
 
-      refute c.details.verified?
+      refute c.verified?
       verifier = SiteChannelVerifier.new(brave_publisher_id: c.details.brave_publisher_id, channel: c)
       verifier.perform
       c.reload
-      refute c.details.verified?
+      refute c.verified?
 
     ensure
       Rails.application.secrets[:api_eyeshade_offline] = true
@@ -77,14 +77,14 @@ class SiteChannelVerifierTest < ActiveSupport::TestCase
       c.details.verification_token = "ASDFG"
       c.details.save
 
-      refute c.details.verified?
+      refute c.verified?
       verifier = SiteChannelVerifier.new(brave_publisher_id: c.details.brave_publisher_id, channel: c)
       verifier.perform
       c.reload
 
       # ToDo: Mock the DNS call
       #
-      # assert c.details.verified?
+      # assert c.verified?
 
     ensure
       Rails.application.secrets[:api_eyeshade_offline] = true

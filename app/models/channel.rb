@@ -20,12 +20,15 @@ class Channel < ApplicationRecord
   # ensure this site_channel will be preserved so the publisher cna come back to it.
   scope :visible_site_channels, -> {
     left_outer_joins(:site_channel_details).
-        where('site_channel_details.verified': true).
-        or(Channel.left_outer_joins(:site_channel_details).where.not('site_channel_details.verification_method': nil))
+        where('channels.verified = true or NOT site_channel_details.verification_method IS NULL')
   }
   scope :visible_youtube_channels, -> {
     left_outer_joins(:youtube_channel_details).
         where.not('youtube_channel_details.youtube_channel_id': nil)
+  }
+  scope :visible_channels, -> {
+    left_outer_joins(:site_channel_details).
+        where('channels.verified = true or NOT site_channel_details.verification_method IS NULL')
   }
 
   # ToDo: figure out how we want to do this

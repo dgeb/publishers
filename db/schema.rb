@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(version: 20171219155706) do
     t.uuid     "publisher_id"
     t.boolean  "created_via_api",          default: false, null: false
     t.boolean  "show_verification_status"
+    t.boolean  "verified",                 default: false
     t.string   "details_type"
     t.uuid     "details_id"
     t.datetime "created_at",                               null: false
@@ -130,7 +131,6 @@ ActiveRecord::Schema.define(version: 20171219155706) do
     t.string   "brave_publisher_id"
     t.string   "brave_publisher_id_unnormalized"
     t.string   "brave_publisher_id_error_code"
-    t.boolean  "verified",                        default: false
     t.string   "verification_token"
     t.string   "verification_method"
     t.boolean  "supports_https",                  default: false
