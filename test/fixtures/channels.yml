@@ -16,6 +16,13 @@ completed:
   details: completed_details (SiteChannelDetails)
   verified: true
 
+stale:
+  created_at: <%= Time.now - 10.weeks %>
+  updated_at: <%= Time.now - 10.weeks %>
+  publisher: stale
+  details: stale_details (SiteChannelDetails)
+  verified: false
+
 fake1:
   publisher: fake1
   details: fake1_details (SiteChannelDetails)

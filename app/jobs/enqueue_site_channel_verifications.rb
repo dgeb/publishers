@@ -1,4 +1,4 @@
-# For Publishers created recently, enqueue jobs to verify each unique
+# For Site Channels created recently, enqueue jobs to verify each unique
 # brave_publisher_id.
 class EnqueueSiteChannelVerifications < ApplicationJob
   MAX_AGE = 6.weeks
@@ -18,10 +18,6 @@ class EnqueueSiteChannelVerifications < ApplicationJob
 
   # Get distinct unverified brave_publisher_ids created recently.
   def brave_publisher_ids
-    SiteChannelDetails
-      .select(:brave_publisher_id).distinct
-      .where.not(brave_publisher_id: SiteChannelDetails.joins(:channel).select(:brave_publisher_id).distinct.where(verified: true))
-      .where(created_at: MAX_AGE.ago..Time.now)
-      .pluck(:brave_publisher_id)
+    SiteChannelDetails.recent_unverified_site_channels(max_age: MAX_AGE).pluck(:brave_publisher_id)
   end
 end

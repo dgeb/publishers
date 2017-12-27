@@ -29,8 +29,6 @@ completed:
   ) %>"
 
 stale:
-  created_at: 2017-01-01
-  updated_at: 2017-01-01
   email: "alice@stale.org"
   name: "Alice the Stale"
   phone: "4159001422"
