@@ -1,4 +1,4 @@
-class SetChannelDomainJob < ApplicationJob
+class SetSiteChannelDomainJob < ApplicationJob
   queue_as :default
 
   def perform(channel_id:)

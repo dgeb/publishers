@@ -4,6 +4,12 @@ default: &default
   details: default_details (SiteChannelDetails)
   verified: false
 
+new_site:
+  publisher: default
+  show_verification_status: true
+  details: new_site_details (SiteChannelDetails)
+  verified: false
+
 verified:
   publisher: verified
   show_verification_status: true

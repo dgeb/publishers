@@ -17,7 +17,7 @@ class SiteChannelDomainSetter < BaseService
 
     brave_publisher_id = SiteChannelDomainNormalizer.new(domain: channel.details.brave_publisher_id_unnormalized).perform
 
-    if SiteChannelDetails.where(brave_publisher_id: brave_publisher_id, verified: true).any?
+    if SiteChannelDetails.joins(:channel).where(brave_publisher_id: brave_publisher_id, "channels.verified": true).any?
       channel.details.brave_publisher_id_error_code = :taken
     else
       channel.details.brave_publisher_id = brave_publisher_id

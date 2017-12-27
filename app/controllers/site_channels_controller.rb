@@ -41,7 +41,7 @@ class SiteChannelsController < ApplicationController
     @current_channel = Channel.new(publisher: current_publisher)
     current_channel.details = SiteChannelDetails.new(channel_update_unverified_params)
 
-    SetChannelDomainJob.perform_later(channel_id: current_channel.id)
+    SetSiteChannelDomainJob.perform_later(channel_id: current_channel.id)
 
     respond_to do |format|
       if current_channel.save
