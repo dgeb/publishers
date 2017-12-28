@@ -123,7 +123,7 @@ ActiveRecord::Schema.define(version: 20171219155706) do
     t.datetime "updated_at",                                            null: false
     t.datetime "uphold_updated_at"
     t.index ["created_at"], name: "index_publishers_on_created_at", using: :btree
-    t.index ["email"], name: "index_publishers_on_email", using: :btree
+    t.index ["email"], name: "index_publishers_on_email", unique: true, using: :btree
     t.index ["pending_email"], name: "index_publishers_on_pending_email", using: :btree
   end
 

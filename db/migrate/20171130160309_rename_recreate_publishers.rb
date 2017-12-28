@@ -27,7 +27,7 @@ class RenameRecreatePublishers < ActiveRecord::Migration[5.0]
       t.boolean :uphold_verified, default: false
 
       t.timestamps
-      t.index :email
+      t.index :email, unique: true
       t.index :pending_email
       t.index :created_at
     end
