@@ -46,7 +46,7 @@ module Publishers
       @current_channel.save
 
       begin
-        PublisherChannelSetter.new(publisher: publisher).perform
+        PublisherChannelSetter.new(publisher: current_publisher).perform
       rescue => e
         # ToDo: What do we do if call to eyeshade fails
         require "sentry-raven"

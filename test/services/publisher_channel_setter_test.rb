@@ -8,9 +8,8 @@ class PublisherChannelSetterTest < ActiveJob::TestCase
       Rails.application.secrets[:api_eyeshade_offline] = true
 
       publisher = publishers(:youtube_new)
-      channel = channels(:youtube_new)
 
-      assert PublisherChannelSetter.new(publisher: publisher, channel: channel).perform
+      assert PublisherChannelSetter.new(publisher: publisher).perform
 
     ensure
       Rails.application.secrets[:api_eyeshade_offline] = prev_api_eyeshade_offline
@@ -22,14 +21,13 @@ class PublisherChannelSetterTest < ActiveJob::TestCase
     begin
       Rails.application.secrets[:api_eyeshade_offline] = false
 
-      stub_request(:post, /v1\/owners/).
+      stub_request(:post, /v2\/owners/).
           with(headers: {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Faraday v0.9.2'}).
           to_return(status: 200, body: nil, headers: {})
 
       publisher = publishers(:youtube_new)
-      channel = channels(:youtube_new)
 
-      result = PublisherChannelSetter.new(publisher: publisher, channel: channel).perform
+      result = PublisherChannelSetter.new(publisher: publisher).perform
       assert_equal 200, result.status
 
     ensure
