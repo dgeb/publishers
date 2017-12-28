@@ -154,7 +154,7 @@ class Publisher < ApplicationRecord
   end
 
   def owner_identifier
-    "uuid#publishers:#{id}"
+    "publishers#uuid:#{id}"
   end
 
   private

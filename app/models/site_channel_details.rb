@@ -65,7 +65,7 @@ class SiteChannelDetails < ApplicationRecord
   private
 
   def generate_verification_token
-    update_attribute(:verification_token, PublisherTokenRequester.new(publisher: self).perform)
+    update_attribute(:verification_token, SiteChannelTokenRequester.new(channel: self.channel).perform)
   end
 
   def verified_publisher_id_exists?

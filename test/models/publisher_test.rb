@@ -270,6 +270,6 @@ class PublisherTest < ActiveSupport::TestCase
   test "formats owner_identifier correctly" do
     publisher = publishers(:default)
 
-    assert_equal "uuid#publishers:02e81b29-f150-54b9-9a08-ce75944f6889", publisher.owner_identifier
+    assert_equal "publishers#uuid:02e81b29-f150-54b9-9a08-ce75944f6889", publisher.owner_identifier
   end
 end

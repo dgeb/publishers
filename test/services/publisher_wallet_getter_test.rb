@@ -25,7 +25,7 @@ class PublisherWalletGetterTest < ActiveJob::TestCase
       publisher = publishers(:google_verified)
       wallet = "{\"wallet\":\"abc123\"}"
 
-      stub_request(:get, /v1\/owners\/owner:#{URI.escape(publisher.id)}\/wallet/).
+      stub_request(:get, /v1\/owners\/#{URI.escape(publisher.owner_identifier)}\/wallet/).
         with(headers: {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Faraday v0.9.2'}).
         to_return(status: 200, body: wallet, headers: {})
 
