@@ -65,10 +65,10 @@ module PublishersHelper
     "https://#{publisher.brave_publisher_id}"
   end
 
-  def link_to_brave_publisher_id(publisher)
-    uri = URI::HTTP.build(host: publisher.brave_publisher_id)
-    link_to(publisher.brave_publisher_id, uri.to_s)
-  end
+  # def link_to_brave_publisher_id(publisher)
+  #   uri = URI::HTTP.build(host: publisher.brave_publisher_id)
+  #   link_to(publisher.brave_publisher_id, uri.to_s)
+  # end
 
   def uphold_authorization_endpoint(publisher)
     publisher.prepare_uphold_state_token
@@ -310,5 +310,9 @@ module PublishersHelper
       else
         link_to(home_publishers_path)
     end
+  end
+
+  def publisher_id_from_owner_identifier(owner_identifier)
+    owner_identifier[/publishers#uuid:(.*)/,1]
   end
 end

@@ -487,3 +487,4 @@ en:
     requires_other_channel_type: "This pages is not valid for this channel type"
     enter_domain: "Enter Domain Info"
     channel_created: "Channel created."
+    please_log_in_and_retry: "Please log in to Brave Payments and retry the operation"

@@ -62,12 +62,10 @@ Rails.application.routes.draw do
   root "static#index"
 
   namespace :api do
-    resources :publishers, format: false, only: [] do
+    resources :owners, format: false, only: [] do
       collection do
-        post "/", action: :create, as: :create
-        get "/:brave_publisher_id", action: :index_by_brave_publisher_id, constraints: { brave_publisher_id: %r{[^\/]+} }
-        post "/:brave_publisher_id/notifications", action: :notify, constraints: { brave_publisher_id: %r{[^\/]+} }
-        delete "/:brave_publisher_id", action: :destroy, as: :destroy, constraints: { brave_publisher_id: %r{[^\/]+} }
+        get "/:owner_id", action: :index_by_owner_id, constraints: { owner_id: %r{[^\/]+} }
+        post "/:owner_id/notifications", action: :notify, constraints: { owner_id: %r{[^\/]+} }
       end
     end
   end

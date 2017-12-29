@@ -2,7 +2,7 @@ module Publishers
   class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
     # ToDo: rework
-    before_action :authenticate_publisher!
+    before_action :require_publisher
 
     def google_oauth2
       oauth_response = request.env['omniauth.auth']
@@ -69,8 +69,9 @@ module Publishers
     end
 
     private
-    def authenticate_publisher!
-      return false unless current_publisher
+    def require_publisher
+      return if current_publisher
+      redirect_to(root_path, alert: I18n.t("channel.please_log_in_and_retry"))
     end
   end
 end

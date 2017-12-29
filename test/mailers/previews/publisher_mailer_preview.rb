@@ -18,17 +18,17 @@ class PublisherMailerPreview < ActionMailer::Preview
     PublisherMailer.verification_done_internal(Publisher.first)
   end
 
-  def welcome
-    PublisherMailer.welcome(Publisher.first)
-  end
+  # def welcome
+  #   PublisherMailer.welcome(Publisher.first)
+  # end
+  #
+  # def welcome_internal
+  #   PublisherMailer.welcome_internal(Publisher.first)
+  # end
 
-  def welcome_internal
-    PublisherMailer.welcome_internal(Publisher.first)
-  end
-
-  def uphold_account_changed
-    PublisherMailer.uphold_account_changed(Publisher.first)
-  end
+  # def uphold_account_changed
+  #   PublisherMailer.uphold_account_changed(Publisher.first)
+  # end
 
   def verified_no_wallet
     PublisherMailer.verified_no_wallet(Publisher.first, nil)

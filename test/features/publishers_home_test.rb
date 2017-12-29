@@ -7,7 +7,7 @@ class PublishersHomeTest < Capybara::Rails::TestCase
     visit root_path
     assert_content page, "Brave Payments"
     click_link('Log in')
-    assert_content page, "Log in to Brave Payments"
+    assert_content page, "Log In"
   end
 
   test "publishers page renders, 'edit contact' opens form, name can be changed" do
