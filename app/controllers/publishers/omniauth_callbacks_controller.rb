@@ -1,5 +1,9 @@
 module Publishers
   class OmniauthCallbacksController < Devise::OmniauthCallbacksController
+
+    # ToDo: rework
+    before_action :authenticate_publisher!
+
     def google_oauth2
       oauth_response = request.env['omniauth.auth']
       token = oauth_response.credentials.token
@@ -16,9 +20,6 @@ module Publishers
 
       if existing_channel
         if existing_channel.publisher == current_publisher
-          # ToDo: How are we going to sync channels if we no longer check on logins
-          # sync_youtube_channel(youtube_channel_data)
-
           redirect_to home_publishers_path, notice: t("youtube.channel_already_registered")
           return
         else
@@ -65,6 +66,11 @@ module Publishers
       else
         '/'
       end
+    end
+
+    private
+    def authenticate_publisher!
+      return false unless current_publisher
     end
   end
 end
