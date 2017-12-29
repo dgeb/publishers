@@ -36,11 +36,13 @@ class PublishersController < ApplicationController
   end
 
   def create
-    if params[:email].blank?
+    email = params[:email]
+
+    if email.blank?
       return redirect_to(root_path, notice: I18n.t("publishers.missing_info_provide_email") )
     end
 
-    @publisher = Publisher.new(pending_email: params[:email])
+    @publisher = Publisher.new(pending_email: email)
 
     @should_throttle = should_throttle_create? || params[:captcha]
     throttle_legit =
@@ -49,7 +51,13 @@ class PublishersController < ApplicationController
         : true
 
     if throttle_legit
-      if @publisher.save
+      verified_publisher = Publisher.find_by(email: email)
+      if verified_publisher
+        @publisher = verified_publisher
+        PublisherLoginLinkEmailer.new(email: email).perform
+        session[:created_publisher_id] = @publisher.id
+        redirect_to create_done_publishers_path
+      elsif @publisher.save
         PublisherMailer.verify_email(@publisher).deliver_later
         PublisherMailer.verify_email_internal(@publisher).deliver_later if PublisherMailer.should_send_internal_emails?
         session[:created_publisher_id] = @publisher.id

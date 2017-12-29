@@ -32,6 +32,16 @@ class PublishersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to(root_path)
   end
 
+  test "can sign up with an existing email, which will send a login email" do
+    assert_no_difference("Publisher.count") do
+      # Login email should be generated
+      assert_enqueued_emails(1) do
+        post(publishers_path, params: { email: "alice@verified.org" })
+      end
+    end
+    assert_redirected_to(create_done_publishers_path)
+  end
+
   test "sends an email with an access link" do
     perform_enqueued_jobs do
       post(publishers_path, params: SIGNUP_PARAMS)
