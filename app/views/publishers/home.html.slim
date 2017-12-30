@@ -51,28 +51,30 @@ javascript:
     }
 
     window.addEventListener('load', function() {
-      var showVerificationStatusInput = document.getElementById('publisher_show_verification_status');
-      showVerificationStatusInput.addEventListener('click', function(event) {
-        submitForm('update_show_verification_status', 'PATCH', true);
-        verificationStatusUpdated(showVerificationStatusInput.checked);
-      }, false);
-
-      if (document.getElementById('verification_modal')) {
-        document.getElementById('verify_now').addEventListener('click', function(event) {
-          showVerificationStatusInput.checked = true;
-          verificationStatusUpdated(true);
-          submitForm('update_show_verification_status', 'PATCH', false);
-          hideVerificationModal();
-        });
-        document.getElementById('verify_later').addEventListener('click', function(event) {
-          showVerificationStatusInput.checked = false;
-          verificationStatusUpdated(false);
-          submitForm('update_show_verification_status', 'PATCH', false);
-          hideVerificationModal();
-        });
-
-        showVerificationModal();
-      }
+      //TODO - show verification status per channel
+      //
+      //var showVerificationStatusInput = document.getElementById('publisher_show_verification_status');
+      //showVerificationStatusInput.addEventListener('click', function(event) {
+      //  submitForm('update_show_verification_status', 'PATCH', true);
+      //  verificationStatusUpdated(showVerificationStatusInput.checked);
+      //}, false);
+      //
+      //if (document.getElementById('verification_modal')) {
+      //  document.getElementById('verify_now').addEventListener('click', function(event) {
+      //    showVerificationStatusInput.checked = true;
+      //    verificationStatusUpdated(true);
+      //    submitForm('update_show_verification_status', 'PATCH', false);
+      //    hideVerificationModal();
+      //  });
+      //  document.getElementById('verify_later').addEventListener('click', function(event) {
+      //    showVerificationStatusInput.checked = false;
+      //    verificationStatusUpdated(false);
+      //    submitForm('update_show_verification_status', 'PATCH', false);
+      //    hideVerificationModal();
+      //  });
+      //
+      //  showVerificationModal();
+      //}
 
       var defaultCurrencySelect = document.getElementById('publisher_default_currency');
       if (defaultCurrencySelect) {
