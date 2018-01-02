@@ -28,6 +28,7 @@ Rails.application.routes.draw do
       patch :update
       patch :generate_statement
       patch :update_unverified
+      patch :complete_signup
       get :choose_new_channel_type
       resources :two_factor_authentications, only: %i(index)
       resources :two_factor_registrations, only: %i(index)

@@ -21,6 +21,9 @@ class PublishersController < ApplicationController
              create_auth_token
              new
              new_auth_token)
+  before_action :require_verified_email,
+    only: %i(email_verified
+             complete_signup)
   before_action :require_verified_publisher,
     only: %i(edit_payment_info
              generate_statement
@@ -84,6 +87,21 @@ class PublishersController < ApplicationController
     session[:created_publisher_id] = @publisher.id
     session[:created_publisher_email] = @publisher.pending_email
     redirect_to create_done_publishers_path, alert: t("publishers.resend_confirmation_email_done")
+  end
+
+  def email_verified
+    @publisher = current_publisher
+  end
+
+  def complete_signup
+    @publisher = current_publisher
+    update_params = publisher_complete_signup_params
+
+    if @publisher.update(update_params)
+      redirect_to publisher_next_step_path(@publisher)
+    else
+      render(:email_verified)
+    end
   end
 
   def update
@@ -295,6 +313,10 @@ class PublishersController < ApplicationController
     end
   end
 
+  def publisher_complete_signup_params
+    params.require(:publisher).permit(:name)
+  end
+
   def publisher_update_params
     params.require(:publisher).permit(:pending_email, :phone, :name, :default_currency)
   end
@@ -307,6 +329,11 @@ class PublishersController < ApplicationController
   def require_unauthenticated_publisher
     return if !current_publisher
     redirect_to(publisher_next_step_path(current_publisher), alert: I18n.t("publishers.already_logged_in"))
+  end
+
+  def require_verified_email
+    return if current_publisher.email_verified?
+    redirect_to(publisher_next_step_path(current_publisher), alert: I18n.t("publishers.email_verification_required"))
   end
 
   def require_verified_publisher

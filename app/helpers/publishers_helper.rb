@@ -190,10 +190,12 @@ module PublishersHelper
   end
 
   def publisher_next_step_path(publisher)
-    home_publishers_path
-    #
-    # if publisher.verified?
-    #   home_publishers_path
+    if publisher.verified?
+      home_publishers_path
+    elsif publisher.email_verified?
+      email_verified_publishers_path
+    end
+
     # elsif publisher.brave_publisher_id.blank?
     #   email_verified_publishers_path
     # else

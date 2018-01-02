@@ -12,10 +12,9 @@ class PublishersControllerTest < ActionDispatch::IntegrationTest
     email: "alice@example.com"
   }
 
-  PUBLISHER_PARAMS = {
+  COMPLETE_SIGNUP_PARAMS = {
     publisher: {
-      name: "Alice the Pyramid",
-      phone: "+14159001420"
+      name: "Alice the Pyramid"
     }
   }.freeze
 
@@ -149,7 +148,7 @@ class PublishersControllerTest < ActionDispatch::IntegrationTest
     get(url)
     follow_redirect!
     perform_enqueued_jobs do
-      patch(publishers_path, params: PUBLISHER_PARAMS)
+      patch(complete_signup_publishers_path, params: COMPLETE_SIGNUP_PARAMS)
     end
 
     # verify two emails (one internal) have been sent
@@ -214,7 +213,7 @@ class PublishersControllerTest < ActionDispatch::IntegrationTest
     get(url)
     follow_redirect!
     perform_enqueued_jobs do
-      patch(publishers_path, params: PUBLISHER_PARAMS)
+      patch(complete_signup_publishers_path, params: COMPLETE_SIGNUP_PARAMS)
     end
 
     # verify that the state token has not yet been set
@@ -249,7 +248,7 @@ class PublishersControllerTest < ActionDispatch::IntegrationTest
       get(url)
       follow_redirect!
       perform_enqueued_jobs do
-        patch(publishers_path, params: PUBLISHER_PARAMS)
+        patch(complete_signup_publishers_path, params: COMPLETE_SIGNUP_PARAMS)
       end
 
       uphold_state_token = SecureRandom.hex(64)
@@ -293,7 +292,7 @@ class PublishersControllerTest < ActionDispatch::IntegrationTest
       get(url)
       follow_redirect!
       perform_enqueued_jobs do
-        patch(publishers_path, params: PUBLISHER_PARAMS)
+        patch(complete_signup_publishers_path, params: COMPLETE_SIGNUP_PARAMS)
       end
 
       uphold_code = 'ebb18043eb2e106fccb9d13d82bec119d8cd016c'
@@ -333,7 +332,7 @@ class PublishersControllerTest < ActionDispatch::IntegrationTest
     get(url)
     follow_redirect!
     perform_enqueued_jobs do
-      patch(publishers_path, params: PUBLISHER_PARAMS)
+      patch(complete_signup_publishers_path, params: COMPLETE_SIGNUP_PARAMS)
     end
 
     url = uphold_verified_publishers_path
@@ -354,7 +353,7 @@ class PublishersControllerTest < ActionDispatch::IntegrationTest
     get(url)
     follow_redirect!
     perform_enqueued_jobs do
-      patch(publishers_path, params: PUBLISHER_PARAMS)
+      patch(complete_signup_publishers_path, params: COMPLETE_SIGNUP_PARAMS)
     end
 
     uphold_state_token = SecureRandom.hex(64)
@@ -381,7 +380,7 @@ class PublishersControllerTest < ActionDispatch::IntegrationTest
     get(url)
     follow_redirect!
     perform_enqueued_jobs do
-      patch(publishers_path, params: PUBLISHER_PARAMS)
+      patch(complete_signup_publishers_path, params: COMPLETE_SIGNUP_PARAMS)
     end
 
     url = generate_statement_publishers_path
