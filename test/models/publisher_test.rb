@@ -6,6 +6,19 @@ class PublisherTest < ActiveSupport::TestCase
   include ActionMailer::TestHelper
   include MailerTestHelper
 
+  test "verified publishers have both a name and email" do
+    publisher = Publisher.new
+    refute publisher.email_verified?
+    refute publisher.verified?
+
+    publisher.email = "jane@example.com"
+    assert publisher.email_verified?
+    refute publisher.verified?
+
+    publisher.name = "Jane"
+    assert publisher.verified?
+  end
+
   test "uphold_code is only valid without uphold_access_parameters and before uphold_verified" do
     publisher = publishers(:verified)
     publisher.uphold_code = "foo"
