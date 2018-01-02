@@ -21,7 +21,8 @@ class SiteChannelTokenRequesterTest < ActiveJob::TestCase
 
       details = site_channel_details(:default_details)
       stub_request(:put, /v1\/owners\/#{URI.escape(details.channel.publisher.owner_identifier)}\/verify\/#{details.brave_publisher_id}/).
-          with(headers: {'Authorization'=>'Bearer', 'Content-Type'=>'application/json'},
+          with(headers: {'Authorization'=>"Bearer #{Rails.application.secrets[:api_eyeshade_key]}",
+                         'Content-Type'=>'application/json'},
                body:
                    <<~BODY
                       {
