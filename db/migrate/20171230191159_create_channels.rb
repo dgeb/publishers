@@ -27,6 +27,10 @@ class CreateChannels < ActiveRecord::Migration[5.0]
       t.string :auth_user_id
       t.string :auth_email
       t.string :auth_name
+      t.string   :title
+      t.string   :description
+      t.string   :thumbnail_url
+      t.integer  :subscriber_count
       t.timestamps
     end
   end

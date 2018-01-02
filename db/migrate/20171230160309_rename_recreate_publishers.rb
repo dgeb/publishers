@@ -1,6 +1,7 @@
 class RenameRecreatePublishers < ActiveRecord::Migration[5.0]
   def change
     rename_table :publishers, :legacy_publishers
+    rename_table :youtube_channels, :legacy_youtube_channels
 
     create_table :publishers, id: :uuid do |t|
       t.string :name, null: :false
@@ -24,6 +25,7 @@ class RenameRecreatePublishers < ActiveRecord::Migration[5.0]
       t.string :encrypted_uphold_code_iv
       t.string :encrypted_uphold_access_parameters
       t.string :encrypted_uphold_access_parameters_iv
+      t.datetime :uphold_updated_at
       t.boolean :uphold_verified, default: false
 
       t.timestamps

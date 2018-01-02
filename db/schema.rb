@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171219155706) do
+ActiveRecord::Schema.define(version: 20171230191159) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -68,6 +68,7 @@ ActiveRecord::Schema.define(version: 20171219155706) do
     t.string   "youtube_channel_id"
     t.string   "brave_publisher_id_unnormalized"
     t.string   "brave_publisher_id_error_code"
+    t.datetime "uphold_updated_at"
     t.index ["brave_publisher_id"], name: "index_legacy_publishers_on_brave_publisher_id", using: :btree
     t.index ["created_at"], name: "index_legacy_publishers_on_created_at", using: :btree
     t.index ["verification_token"], name: "index_legacy_publishers_on_verification_token", using: :btree
@@ -119,9 +120,9 @@ ActiveRecord::Schema.define(version: 20171219155706) do
     t.string   "encrypted_uphold_code_iv"
     t.string   "encrypted_uphold_access_parameters"
     t.string   "encrypted_uphold_access_parameters_iv"
+    t.datetime "uphold_updated_at"
     t.datetime "created_at",                                            null: false
     t.datetime "updated_at",                                            null: false
-    t.datetime "uphold_updated_at"
     t.index ["created_at"], name: "index_publishers_on_created_at", using: :btree
     t.index ["email"], name: "index_publishers_on_email", unique: true, using: :btree
     t.index ["pending_email"], name: "index_publishers_on_pending_email", using: :btree
@@ -179,12 +180,12 @@ ActiveRecord::Schema.define(version: 20171219155706) do
     t.string   "auth_user_id"
     t.string   "auth_email"
     t.string   "auth_name"
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
     t.string   "title"
     t.string   "description"
     t.string   "thumbnail_url"
     t.integer  "subscriber_count"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
     t.index ["youtube_channel_id"], name: "index_youtube_channel_details_on_youtube_channel_id", unique: true, using: :btree
   end
 
