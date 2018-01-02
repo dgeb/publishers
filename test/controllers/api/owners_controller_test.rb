@@ -70,7 +70,6 @@ class Api::OwnersControllerTest < ActionDispatch::IntegrationTest
     owner = publishers(:verified)
 
     get "/api/owners/#{URI.escape(owner.owner_identifier)}"
-    puts response.body
 
     assert_equal 200, response.status
   end
