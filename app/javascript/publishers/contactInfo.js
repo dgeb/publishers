@@ -6,7 +6,7 @@ import flash from '../utils/flash';
 import spinner from '../utils/spinner';
 
 document.addEventListener('DOMContentLoaded', function() {
-  var updateContactInfo = document.getElementById('update_contact_info');
+  let updateContactInfo = document.getElementById('update_contact_info');
 
   if (!updateContactInfo) {
     return;
