@@ -6,7 +6,6 @@ import 'u2f/registrationPage';
 import 'u2f/authenticationPage';
 import 'publishers/home';
 import 'publishers/contactInfo';
-import 'legacyGlobals';
 import Rails from 'rails-ujs';
 
 /*
