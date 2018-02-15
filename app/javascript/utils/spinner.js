@@ -32,7 +32,7 @@ export default {
     spinnerElements[elementId] = element;
     spinnerShown[elementId] = Date.now();
 
-    element.style.display = 'block';
+    element.classList.remove('hidden');
   },
 
   hide: function(elementOrId) {
@@ -54,10 +54,10 @@ export default {
       var now = Date.now();
 
       if (now - shown > minTime)
-        element.style.display = 'none';
+        element.classList.add('hidden');
       else {
         setTimeout(function() {
-          element.style.display = 'none';
+          element.classList.add('hidden');
         }, minTime - (now - shown));
       }
     }
