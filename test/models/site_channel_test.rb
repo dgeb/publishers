@@ -1,6 +1,7 @@
 require "test_helper"
 
 class SiteChannelTest < ActiveSupport::TestCase
+  include ActionMailer::TestHelper
 
   test "a channel cannot change brave_publisher_id" do
     details = site_channel_details(:verified_details)
@@ -67,4 +68,29 @@ class SiteChannelTest < ActiveSupport::TestCase
     refute brave_publisher_ids.include?("stale.org")
   end
 
+  test "start_verification triggers verification" do
+    channel = channels(:default)
+
+    assert_nil channel.details.verification_started
+    assert_nil channel.details.verification_failed
+
+    assert_enqueued_with(job: VerifySiteChannel) do
+      channel.details.start_verification
+    end
+
+    assert_not_nil channel.details.verification_started
+    assert_nil channel.details.verification_failed
+  end
+
+  test "register_verification_failure marks failure" do
+    channel = channels(:default)
+
+    assert_nil channel.details.verification_started
+    assert_nil channel.details.verification_failed
+
+    channel.details.register_verification_failure
+
+    assert_nil channel.details.verification_started
+    assert_not_nil channel.details.verification_failed
+  end
 end

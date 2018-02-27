@@ -84,6 +84,19 @@ class SiteChannelDetails < ApplicationRecord
     end
   end
 
+  def start_verification
+    self.verification_started = Time.now
+    self.verification_failed = nil
+    save!
+
+    VerifySiteChannel.perform_later(channel_id: self.channel.id)
+  end
+
+  def register_verification_failure
+    self.verification_failed = Time.now
+    save!
+  end
+
   private
 
   def verified_publisher_id_exists?
