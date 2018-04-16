@@ -4,6 +4,23 @@ $brave-panels-borderRadius: 8px;
   padding: 0 15px;
 }
 
+// Generic panel
+// Used on the dashbaord
+.panel {
+  background-color: white;
+  border-radius: $brave-panels-borderRadius;
+  box-shadow: 2px 2px 0px 0px rgba(47,48,50,0.15);
+  display: flex;
+  min-height: 110px;
+  margin-bottom: 25px;
+
+  &--no-background {
+    background-color: unset;
+    border-radius: unset;
+    box-shadow: unset;
+  }
+}
+
 .single-panel {
 
   &--wrapper {
@@ -160,6 +177,7 @@ $brave-panels-borderRadius: 8px;
     }
   }
 }
+
 
 .icon-and-text {
   &--wrapper {
